@@ -17,6 +17,7 @@ interface TaxSettings {
   longDuration: '1Y' | '2Y' | '5Y' | 'None';
   incomeRate: number;
   costBasis: 'FIFO' | 'LIFO' | 'HIFO' | 'ACB';
+  feesAreCapitalGains: boolean;
 }
 
 // Add this custom hook
@@ -36,7 +37,8 @@ const useTaxSettings = () => {
           typeof parsed.incomeRate === 'number' &&
           typeof parsed.costBasis === 'string' &&
           ['1Y', '2Y', '5Y', 'None'].includes(parsed.longDuration) &&
-          ['FIFO', 'LIFO', 'HIFO', 'ACB'].includes(parsed.costBasis)
+          ['FIFO', 'LIFO', 'HIFO', 'ACB'].includes(parsed.costBasis) &&
+          typeof parsed.feesAreCapitalGains === 'boolean'
         ) {
           return parsed;
         }
@@ -52,6 +54,7 @@ const useTaxSettings = () => {
       longDuration: '1Y',
       incomeRate: 24,
       costBasis: 'FIFO',
+      feesAreCapitalGains: false,
     };
     localStorage.setItem('occu-tax-settings', JSON.stringify(defaultSettings));
     return defaultSettings;
@@ -195,8 +198,14 @@ export const ReportSettings = observer(() => {
                     </SegmentedControl>
                   </div>
                   <div className='grid grid-cols-2 gap-2 items-center'>
-                    <Text color='text.primary'>Mark fees as expenses</Text>
-                    <Toggle label='Mark fees as expenses' value={false} onChange={() => {}} />
+                    <Text color='text.primary'>Count fees as capital gains</Text>
+                    <Toggle
+                      label='Count fees as capital gains'
+                      value={settings.feesAreCapitalGains}
+                      onChange={() =>
+                        updateSettings({ feesAreCapitalGains: !settings.feesAreCapitalGains })
+                      }
+                    />
                   </div>
                 </div>
                 <Button actionType='accent'>Generate Report</Button>
