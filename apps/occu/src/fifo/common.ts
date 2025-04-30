@@ -32,27 +32,9 @@ export const inventory_header = [
   'Date Acquired',
 ];
 
-// Actions that are included in tax calculations
-export const TaxableActions = new Set([
-  'receive',
-  'send',
-  'swap',
-  'swapClaim',
-  'undelegateClaim',
-
-  // TODO:
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.ibcRelayAction,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.ics20Withdrawal,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.delegate,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.undelegate,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.dutchAuctionSchedule,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.dutchAuctionEnd,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.dutchAuctionWithdraw,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.positionClose,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.positionOpen,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.positionWithdraw,
-  // TRANSACTION_LABEL_BY_CLASSIFICATION.positionRewardClaim,
-]);
+// Actions that are not in these two sets are considered to be expenses
+export const IncomeTaxActions = new Set(['receive', 'undelegateClaim', 'positionRewardClaim']);
+export const DisposalTaxActions = new Set(['send', 'swap']);
 
 export interface TaxTransactionEvent {
   date?: Date | null;

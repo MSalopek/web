@@ -4,7 +4,7 @@ import VeilLogo from '../assets/veil-combined-logo.svg';
 
 export const HeaderLogo = () => {
   return (
-    <Link className='flex h-8 items-center' href={PagePath.Explore}>
+    <Link className='flex h-8 items-center' href={PagePath.Overview}>
       <VeilLogo width={96} height={15} />
     </Link>
   );

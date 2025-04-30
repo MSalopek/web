@@ -14,9 +14,9 @@ import { useBalances as useCosmosBalances } from '@/features/cosmos/use-augmente
 import { Metadata, ValueView } from '@penumbra-zone/protobuf/penumbra/core/asset/v1/asset_pb';
 import { assetPatterns } from '@penumbra-zone/types/assets';
 import { Asset } from '@chain-registry/types';
-import { AssetPrice, useAssetPrices } from '@/pages/portfolio/api/use-asset-prices.ts';
+import { AssetPrice, useAssetPrices } from '@/pages/overview/api/use-asset-prices.ts';
 import { pnum } from '@penumbra-zone/types/pnum';
-import { shouldFilterAsset } from '@/pages/portfolio/api/use-unified-assets.ts';
+import { shouldFilterAsset } from '@/pages/overview/api/use-unified-assets.ts';
 
 interface AssetAllocation {
   symbol: string;

@@ -16,7 +16,7 @@ export const HelpPopover = observer(() => {
       </Popover.Trigger>
       <Popover.Content align='end' side='bottom'>
         <NextLink
-          href='/portfolio?showOnboarding=true'
+          href='/overview?showOnboarding=true'
           className='flex px-3 py-2 gap-3 text-text-primary'
         >
           <Icon IconComponent={CircleHelp} size='md' />

@@ -1,27 +1,20 @@
 import Link from 'next/link';
-import { MoonStar, Coins, FileText } from 'lucide-react';
+import { Coins, FileText } from 'lucide-react';
 import { PagePath } from '@/shared/const/pages';
 
 export const HEADER_LINKS = [
   {
     as: Link,
-    tabProps: { href: PagePath.Portfolio },
-    label: 'Portfolio',
-    value: PagePath.Portfolio,
+    tabProps: { href: PagePath.Overview },
+    label: 'Overview',
+    value: PagePath.Overview,
     icon: Coins,
   },
   {
     as: Link,
-    tabProps: { href: PagePath.Reports },
+    tabProps: { href: PagePath.Overview },
     label: 'Reports',
-    value: PagePath.Reports,
+    value: PagePath.Overview,
     icon: FileText,
-  },
-  {
-    as: Link,
-    tabProps: { href: PagePath.Inspect },
-    label: 'Inspect',
-    value: PagePath.Inspect,
-    icon: MoonStar,
   },
 ];

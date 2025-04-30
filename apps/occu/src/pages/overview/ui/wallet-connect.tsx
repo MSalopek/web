@@ -5,8 +5,6 @@ import { ConnectButton } from '@/features/connect/connect-button';
 import { observer } from 'mobx-react-lite';
 import { CosmosConnectButton } from '@/features/cosmos/cosmos-connect-button.tsx';
 import { useUnifiedAssets } from '../api/use-unified-assets.ts';
-import { Skeleton } from '@penumbra-zone/ui/Skeleton';
-import { dismissedKey } from './onboarding.tsx';
 
 // Custom hook to watch for localStorage changes
 const useLocalStorageState = (key: string, defaultValue: boolean): boolean => {
@@ -63,7 +61,6 @@ const useLocalStorageState = (key: string, defaultValue: boolean): boolean => {
 export const WalletConnect = observer(() => {
   const { isPenumbraConnected, isCosmosConnected, totalPublicValue, totalShieldedValue } =
     useUnifiedAssets();
-  const onboardingDismissed = useLocalStorageState(dismissedKey, false);
 
   // Format the values with commas and 2 decimal places
   const formattedShieldedValue = useMemo(() => {
@@ -87,9 +84,7 @@ export const WalletConnect = observer(() => {
         <div className='absolute top-6 right-6'>
           <Shield className='text-white opacity-10 w-8 h-8' />
         </div>
-        <div
-          className={`flex flex-col items-start ${onboardingDismissed ? 'gap-6' : 'gap-2'} h-full justify-between`}
-        >
+        <div className='flex flex-col items-start gap-6 h-full justify-between'>
           <Text color='text.secondary'>Shielded Assets</Text>
 
           {/* eslint-disable-next-line no-nested-ternary -- no match expression */}
@@ -100,7 +95,7 @@ export const WalletConnect = observer(() => {
                 {formattedShieldedValue} USDC
               </div>
             </div>
-          ) : onboardingDismissed ? (
+          ) : (
             <>
               <div className='space-y-2 text-3xl'>
                 <Text xxl color='text.primary'>
@@ -115,10 +110,6 @@ export const WalletConnect = observer(() => {
                 />
               </div>
             </>
-          ) : (
-            <div className='w-[100px] h-[24px]'>
-              <Skeleton />
-            </div>
           )}
         </div>
       </div>
@@ -139,7 +130,7 @@ export const WalletConnect = observer(() => {
                 {formattedPublicValue} USDC
               </div>
             </div>
-          ) : onboardingDismissed ? (
+          ) : (
             <>
               <div className='space-y-2 text-3xl'>
                 <Text xxl color='text.primary'>
@@ -154,10 +145,6 @@ export const WalletConnect = observer(() => {
                 />
               </div>
             </>
-          ) : (
-            <div className='w-[100px] h-[24px]'>
-              <Skeleton />
-            </div>
           )}
         </div>
       </div>

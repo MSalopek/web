@@ -2,32 +2,15 @@ import { usePagePath } from '@/shared/utils/usePagePath.ts';
 
 export enum PagePath {
   Home = '',
-  Explore = '/explore',
-  Trade = '/trade',
+  Overview = '/overview',
   Inspect = '/inspect',
-  Portfolio = '/portfolio',
-  Reports = '/reports',
-  Tournament = '/tournament',
-  TournamentRound = '/tournament/:epoch',
-  TournamentDelegator = '/tournament/delegator/:address',
-  TradePair = '/trade/:primary/:numeraire',
   InspectLp = '/inspect/lp/:id',
-  LpLeaderboard = '/inspect/lp-leaderboard',
+  Reports = '/reports',
 }
-
-const basePath: Partial<Record<PagePath, PagePath>> = {
-  [PagePath.TradePair]: PagePath.Trade,
-  '/inspect/lp/:id': PagePath.Inspect,
-  '/tournament/:epoch': PagePath.Tournament,
-};
 
 // Used for dynamic routing when wanting to exclude the dynamic elements
 export const useBasePath = (): PagePath => {
   const path = usePagePath();
 
-  const base = basePath[path];
-  if (base) {
-    return base;
-  }
   return path;
 };

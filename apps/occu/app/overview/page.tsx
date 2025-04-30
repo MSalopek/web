@@ -1,9 +1,9 @@
-import { PortfolioPage } from '@/pages/portfolio';
+import { OverviewPage } from '@/pages/overview';
 import { headers } from 'next/headers';
 import { userAgent } from 'next/server';
 
-export default function Portfolio() {
+export default function Overview() {
   const headersList = headers();
   const { device } = userAgent({ headers: headersList });
-  return <PortfolioPage isMobile={device.type === 'mobile'} />;
+  return <OverviewPage isMobile={device.type === 'mobile'} />;
 }

@@ -17,7 +17,7 @@ import {
 import { uint8ArrayToBase64 } from '@penumbra-zone/types/base64';
 
 import { ChainRegistryClient } from '@penumbra-labs/registry';
-import { TaxableActions, TaxTransactionEvent } from './common';
+import { TaxTransactionEvent } from './common';
 
 export interface SummaryBalance {
   negative: boolean;
@@ -329,12 +329,4 @@ export function penumbraTxToTaxEvent(info: TransactionInfo) {
   }
 
   return taxEvent;
-}
-
-// Filter transactions that are tax events
-export function filterTaxableTransactions(txs: TransactionInfo[]) {
-  return txs.filter(tx => {
-    const { type } = classifyTransaction(tx.view);
-    return TaxableActions.has(type);
-  });
 }
