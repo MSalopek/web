@@ -12,9 +12,9 @@ export const HEADER_LINKS = [
   },
   {
     as: Link,
-    tabProps: { href: PagePath.Overview },
+    tabProps: { href: PagePath.Reports },
     label: 'Reports',
-    value: PagePath.Overview,
+    value: PagePath.Reports,
     icon: FileText,
   },
 ];
