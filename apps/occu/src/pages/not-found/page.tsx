@@ -1,7 +1,7 @@
 import { XCircle } from 'lucide-react';
 import { Text } from '@penumbra-zone/ui/Text';
-import { PenumbraWaves } from '@/pages/explore/ui/waves';
 import { GoBackLink } from './link';
+import { PenumbraWaves } from '@/shared/ui/waves';
 
 export const NotFoundPage = () => {
   return (

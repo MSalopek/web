@@ -1,9 +1,9 @@
-import { InfoCard } from '@/pages/explore/ui/info-card';
 import { Text } from '@penumbra-zone/ui/Text';
 import { TableCell } from '@penumbra-zone/ui/TableCell';
 import { BlockSummaryApiResponse } from '@/shared/api/server/block/types';
 import { ValueViewComponent } from '@penumbra-zone/ui/ValueView';
 import { pnum } from '@penumbra-zone/types/pnum';
+import { InfoCard } from '@/shared/ui/info-card';
 
 export function BlockSummary({ blockSummary }: { blockSummary: BlockSummaryApiResponse }) {
   if ('error' in blockSummary) {

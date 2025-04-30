@@ -1,6 +1,6 @@
 'use client';
 
-import Waves from './penumbra-waves.svg';
+import Waves from '../assets/penumbra-waves.svg';
 import cn from 'clsx';
 
 export const PenumbraWaves = () => {
