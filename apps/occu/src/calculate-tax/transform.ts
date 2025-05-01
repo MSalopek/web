@@ -9,15 +9,16 @@ import { getOneWaySwapValues, isOneWaySwap } from '@penumbra-zone/types/swap';
 import { SwapView } from '@penumbra-zone/protobuf/penumbra/core/component/dex/v1/dex_pb';
 import { pnum } from '@penumbra-zone/types/pnum';
 import {
-  AssetId,
   Denom,
   Metadata,
   ValueView,
 } from '@penumbra-zone/protobuf/penumbra/core/asset/v1/asset_pb';
-import { uint8ArrayToBase64 } from '@penumbra-zone/types/base64';
 
-import { ChainRegistryClient } from '@penumbra-labs/registry';
 import { TaxTransactionEvent } from './common';
+import { unpackIbcRelay } from '@penumbra-zone/perspective/action-view/ibc';
+import { IbcRelay } from '@penumbra-zone/protobuf/penumbra/core/component/ibc/v1/ibc_pb';
+import { fromString } from '@penumbra-zone/types/amount';
+import { GetMetadata } from '@/shared/api/assets';
 
 export interface SummaryBalance {
   negative: boolean;
@@ -40,49 +41,14 @@ export interface SummaryData {
   address?: AddressView;
 }
 
-export const chainRegistryClient = new ChainRegistryClient();
-
-const registry = chainRegistryClient.bundled
-  .get('penumbra-1')
-  .getAllAssets()
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Asset properties are dynamically added by the registry and cannot be typed statically */
-  .sort((a, b) => Number(b.priorityScore) - Number(a.priorityScore));
-
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- TS is being annoying here */
-const assetIdMap = registry.reduce<Map<string, Metadata>>((accum, asset) => {
-  if (!asset.penumbraAssetId?.inner) {
-    return accum;
-  }
-  accum.set(uint8ArrayToBase64(asset.penumbraAssetId.inner), asset);
-  accum.set(asset.base, asset);
-  return accum;
-}, new Map());
-
-function isDenom(value?: Denom | AssetId): value is Denom {
-  return value?.getType().typeName === Denom.typeName;
-}
-
-export function getMetadata(id?: AssetId | Denom): Metadata | undefined {
-  const key = isDenom(id) ? id.denom : id?.inner && uint8ArrayToBase64(id.inner);
-  if (!key) {
-    return undefined;
-  }
-
-  return assetIdMap.get(key);
-}
-
-export type GetMetadata = (assetId?: AssetId | Denom) => Metadata | undefined;
-
-export const DEFAULT_MEMO = 'Memo empty';
-
 export const CLASSIFICATION_LABEL_MAP: Record<TransactionClassification, string> = {
   unknown: 'Unknown',
   unknownInternal: 'Unknown (Internal)',
   receive: 'Receive',
   send: 'Send',
   internalTransfer: 'Internal Transfer',
-  ics20Withdrawal: 'Withdrawal',
-  ibcRelayAction: 'Deposit',
+  ics20Withdrawal: 'IBC Withdrawal',
+  ibcRelayAction: 'IBC Receive',
   swap: 'Swap',
   swapClaim: 'Swap Claim',
   delegate: 'Delegate',
@@ -272,6 +238,46 @@ export function penumbraTxToTaxEvent(info: TransactionInfo, getMetadata?: GetMet
     fee_asset: 'UM',
   };
 
+  // ibcRelayAction does not have any effects, so it needs special processing
+  if (type === 'ibcRelayAction') {
+    taxEvent.type = 'income';
+    try {
+      const unpacked = unpackIbcRelay(action?.actionView.value as IbcRelay);
+      let assetDenom = unpacked?.tokenData?.denom ?? 'Unknown';
+      let asset: Metadata | undefined = getMetadata?.(new Denom({ denom: assetDenom }));
+      if (!asset) {
+        // Attribution: copied from package/ui ibc-relay.tsx
+        // sometimes denom comes in form of "uosmo", and sometimes as "transfer/channel-4/uosmo",
+        // where "transfer" is `sourcePort` and "channel-4" is `sourceChannel`.
+        // the next lines extract the denom part from and merges it with destination data.
+        // Penumbra is the only asset that doesn't have "transfer" in the denom – hardcode it here.
+        const denomMatch = /\/([^/]+)$/.exec(unpacked?.tokenData?.denom ?? 'Unknown');
+        assetDenom = `${unpacked?.packet?.destinationPort}/${unpacked?.packet?.destinationChannel}/${denomMatch?.[1] ?? unpacked?.tokenData?.denom}`;
+        if (unpacked?.tokenData?.denom === 'upenumbra' || denomMatch?.[1] === 'upenumbra') {
+          assetDenom = 'upenumbra';
+        }
+        asset = getMetadata?.(new Denom({ denom: assetDenom }));
+      }
+      taxEvent.asset_in = asset?.symbol ?? 'Unknown';
+      const amount = fromString(unpacked?.tokenData?.amount ?? '0');
+
+      // NOTE:
+      // ibc transfer amounts are in the base denom (transfer/channel-2/uusdc) - exponent 0
+      // display units (usdc) - exponent 6
+      // [
+      //  {denom: 'transfer/channel-2/uusdc', exponent: 0, aliases: Array(0)} -> base denom
+      //  {denom: 'transfer/channel-2/usdc', exponent: 6, aliases: Array(0)}  -> display denom
+      // ]
+      // get display exponent from asset metadata so amounts can be converted to display units correctly
+      const displayExponent = asset?.display;
+      const exponent =
+        asset?.denomUnits.find(unit => unit.denom === displayExponent)?.exponent ?? 0;
+      taxEvent.amount_in = pnum(amount, { exponent }).toNumber();
+    } catch (e) {
+      console.error('error parsing ibc relay action', e);
+    }
+  }
+
   // categorize and sum up transaction summary effects
   const effects = calculateEffects(info.summary?.effects ?? [], getMetadata);
   if (effects.length === 0) {
@@ -305,13 +311,15 @@ export function penumbraTxToTaxEvent(info: TransactionInfo, getMetadata?: GetMet
     if (isOneWay) {
       const swap = getOneWaySwapValues(action?.actionView.value as SwapView, getMetadata);
       taxEvent.type = 'disposal';
-      taxEvent.amount_in = pnum(swap.input).toNumber();
-      taxEvent.asset_in =
+      // the input is technically the asset that is being disposed of
+      taxEvent.amount_out = pnum(swap.input).toNumber();
+      taxEvent.asset_out =
         swap.input.valueView.case === 'knownAssetId'
           ? (swap.input.valueView.value.metadata?.symbol ?? 'Unknown')
           : 'Unknown';
-      taxEvent.amount_out = pnum(swap.output).toNumber();
-      taxEvent.asset_out =
+      // the output is technically the asset that is being acquired
+      taxEvent.amount_in = pnum(swap.output).toNumber();
+      taxEvent.asset_in =
         swap.output.valueView.case === 'knownAssetId'
           ? (swap.output.valueView.value.metadata?.symbol ?? 'Unknown')
           : 'Unknown';
@@ -323,6 +331,36 @@ export function penumbraTxToTaxEvent(info: TransactionInfo, getMetadata?: GetMet
     taxEvent.label = 'Undelegate Claim';
     taxEvent.amount_in = pnum(effects[0]?.balances[0]?.view).toNumber();
     taxEvent.asset_in =
+      effects[0]?.balances[0]?.view.valueView.case === 'knownAssetId'
+        ? (effects[0].balances[0]?.view.valueView.value.metadata?.symbol ?? 'Unknown')
+        : 'Unknown';
+  }
+
+  if (type === 'ics20Withdrawal') {
+    taxEvent.type = 'expense';
+    taxEvent.label = 'Withdrawal';
+    taxEvent.amount_out = pnum(effects[0]?.balances[0]?.view).toNumber();
+    taxEvent.asset_out =
+      effects[0]?.balances[0]?.view.valueView.case === 'knownAssetId'
+        ? (effects[0].balances[0]?.view.valueView.value.metadata?.symbol ?? 'Unknown')
+        : 'Unknown';
+  }
+
+  if (type === 'ibcRelayAction') {
+    taxEvent.type = 'expense';
+    taxEvent.label = 'IBC Deposit';
+    taxEvent.amount_out = pnum(effects[0]?.balances[0]?.view).toNumber();
+    taxEvent.asset_out =
+      effects[0]?.balances[0]?.view.valueView.case === 'knownAssetId'
+        ? (effects[0].balances[0]?.view.valueView.value.metadata?.symbol ?? 'Unknown')
+        : 'Unknown';
+  }
+
+  if (type === 'internalTransfer') {
+    taxEvent.type = 'expense';
+    taxEvent.label = 'Internal Transfer';
+    taxEvent.amount_out = pnum(effects[0]?.balances[0]?.view).toNumber();
+    taxEvent.asset_out =
       effects[0]?.balances[0]?.view.valueView.case === 'knownAssetId'
         ? (effects[0].balances[0]?.view.valueView.value.metadata?.symbol ?? 'Unknown')
         : 'Unknown';

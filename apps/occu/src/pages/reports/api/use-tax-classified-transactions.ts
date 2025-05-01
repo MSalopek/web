@@ -1,12 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { ViewService } from '@penumbra-zone/protobuf';
-import { getAddressIndex } from '@penumbra-zone/getters/address-view';
 import { penumbra } from '@/shared/const/penumbra';
 import { TaxTransactionEvent } from '@/calculate-tax/common';
 import { penumbraTxToTaxEvent } from '@/calculate-tax/transform';
 import { GetMetadata } from '@/shared/api/assets';
 
-const BASE_LIMIT = 20;
+const BASE_LIMIT = 1000;
 const BASE_PAGE = 0;
 
 export const useTaxClassifiedTransactions = (subaccount = 0, getMetadata?: GetMetadata) => {
@@ -21,21 +20,7 @@ export const useTaxClassifiedTransactions = (subaccount = 0, getMetadata?: GetMe
 
       // Filters and maps the array at the same time
       let reduced = res.reduce<TaxTransactionEvent[]>((accum, tx) => {
-        const addresses = tx.txInfo?.perspective?.addressViews;
-
-        if (
-          !tx.txInfo ||
-          !addresses?.some(address => getAddressIndex.optional(address)?.account === subaccount)
-        ) {
-          return accum;
-        }
-
-        // TODO: filter out ics20Withdrawal actions. Remove after the issue is fixed: https://github.com/penumbra-zone/web/issues/2109
-        if (
-          tx.txInfo.transaction?.body?.actions.some(
-            action => action.action.case === 'ics20Withdrawal',
-          )
-        ) {
+        if (!tx.txInfo) {
           return accum;
         }
 

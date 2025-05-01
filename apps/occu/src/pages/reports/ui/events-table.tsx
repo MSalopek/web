@@ -133,30 +133,30 @@ export const EventsTable = observer(() => {
             <Button density='compact'>Export CSV</Button>
           </div>
         </div>
-      </div>
-      <Density compact>
-        <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
-          <TableCell heading>Height</TableCell>
-          <TableCell heading>Event Type</TableCell>
-          <TableCell heading>Tx Type</TableCell>
-          <TableCell heading>Amount In</TableCell>
-          <TableCell heading>Amount Out</TableCell>
-          <TableCell heading>Fee Amount</TableCell>
-          <TableCell heading>Cost Basis</TableCell>
-          {/* empty cell for actions */}
-          <TableCell> </TableCell>
+        <Density compact>
+          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
+            <TableCell heading>Height</TableCell>
+            <TableCell heading>Event Type</TableCell>
+            <TableCell heading>Tx Type</TableCell>
+            <TableCell heading>Amount In</TableCell>
+            <TableCell heading>Amount Out</TableCell>
+            <TableCell heading>Fee Amount</TableCell>
+            <TableCell heading>Cost Basis</TableCell>
+            {/* empty cell for actions */}
+            <TableCell> </TableCell>
 
-          {transactions?.pages.map(page =>
-            page.map((tx, index) => (
-              <EventRow
-                key={`${tx.tx_hash}-${index}`}
-                event={tx}
-                isLastRow={index === page.length - 1}
-              />
-            )),
-          )}
-        </div>
-      </Density>
+            {transactions?.pages.map(page =>
+              page.map((tx, index) => (
+                <EventRow
+                  key={`${tx.tx_hash}-${index}`}
+                  event={tx}
+                  isLastRow={index === page.length - 1}
+                />
+              )),
+            )}
+          </div>
+        </Density>
+      </div>
     </Card>
   );
 });
