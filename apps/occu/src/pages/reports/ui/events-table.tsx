@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { TaxTransactionEvent } from '@/fifo/common';
+import { TaxTransactionEvent } from '@/calculate-tax/common';
 import { Button } from '@penumbra-zone/ui/Button';
 
 import { TableCell } from '@penumbra-zone/ui/TableCell';

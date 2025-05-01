@@ -2,8 +2,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { ViewService } from '@penumbra-zone/protobuf';
 import { getAddressIndex } from '@penumbra-zone/getters/address-view';
 import { penumbra } from '@/shared/const/penumbra';
-import { TaxTransactionEvent } from '@/fifo/common';
-import { penumbraTxToTaxEvent } from '@/fifo/transform';
+import { TaxTransactionEvent } from '@/calculate-tax/common';
+import { penumbraTxToTaxEvent } from '@/calculate-tax/transform';
 import { GetMetadata } from '@/shared/api/assets';
 
 const BASE_LIMIT = 20;

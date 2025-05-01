@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { penumbraTxToTaxEvent } from './transform.js';
 import { TransactionInfo } from '@penumbra-zone/protobuf/penumbra/view/v1/view_pb';
-import { example_tx_data } from './example_data';
+import { example_tx_data } from './example_data.js';
 
 describe('penumbraTxToTaxEvent', () => {
   it('should transform transaction info to tax event', () => {

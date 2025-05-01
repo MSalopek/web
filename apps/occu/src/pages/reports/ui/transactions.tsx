@@ -15,7 +15,7 @@ import { BlockchainError } from '@/shared/ui/blockchain-error';
 import { useObserver } from '@/shared/utils/use-observer';
 import { useTransactions } from '../api/use-transactions';
 import { NoData } from './no-data';
-import { DisposalTaxActions, IncomeTaxActions } from '@/fifo/common';
+import { DisposalTaxActions, IncomeTaxActions } from '@/calculate-tax/common';
 import { classifyTransaction } from '@penumbra-zone/perspective/transaction/classify';
 
 const getTransactionLink = (id?: TransactionId) => {
