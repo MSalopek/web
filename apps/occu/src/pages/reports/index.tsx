@@ -9,6 +9,11 @@ import { Density } from '@penumbra-zone/ui/Density';
 import { useRegistry } from '@/shared/api/registry.ts';
 import { IbcChainProvider } from '@/features/cosmos/chain-provider.tsx';
 import { ReportSettings } from './ui/report-settings';
+import { AssetsTable } from './ui/assets-table';
+import { useUnifiedAssets } from './api/use-unified-assets';
+import { AllTransactions } from './ui/transactions';
+import { Card } from '@penumbra-zone/ui/Card';
+import { EventsTable } from './ui/events-table';
 
 interface ReportsPageProps {
   isMobile: boolean;
@@ -65,9 +70,17 @@ function MobileReportsPage() {
 }
 
 const DesktopReportsPage = observer(() => {
+  const { isPenumbraConnected } = useUnifiedAssets();
+
   return (
     <div className='sm:container mx-auto py-8 flex flex-col gap-4'>
       <ReportSettings />
+      {isPenumbraConnected && (
+        <>
+          <AssetsTable />
+          <EventsTable />
+        </>
+      )}
     </div>
   );
 });

@@ -1,14 +1,16 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { TransactionInfo } from '@penumbra-zone/protobuf/penumbra/view/v1/view_pb';
 import { ViewService } from '@penumbra-zone/protobuf';
 import { getAddressIndex } from '@penumbra-zone/getters/address-view';
 import { penumbra } from '@/shared/const/penumbra';
+import { TaxTransactionEvent } from '@/fifo/common';
+import { penumbraTxToTaxEvent } from '@/fifo/transform';
+import { GetMetadata } from '@/shared/api/assets';
 
 const BASE_LIMIT = 20;
 const BASE_PAGE = 0;
 
-export const useTransactions = (subaccount = 0) => {
-  return useInfiniteQuery<TransactionInfo[]>({
+export const useTaxClassifiedTransactions = (subaccount = 0, getMetadata?: GetMetadata) => {
+  return useInfiniteQuery<TaxTransactionEvent[]>({
     queryKey: ['txs', subaccount],
     initialPageParam: BASE_PAGE,
     getNextPageParam: (lastPage, _, lastPageParam) => {
@@ -18,7 +20,7 @@ export const useTransactions = (subaccount = 0) => {
       const res = await Array.fromAsync(penumbra.service(ViewService).transactionInfo({}));
 
       // Filters and maps the array at the same time
-      let reduced = res.reduce<TransactionInfo[]>((accum, tx) => {
+      let reduced = res.reduce<TaxTransactionEvent[]>((accum, tx) => {
         const addresses = tx.txInfo?.perspective?.addressViews;
 
         if (
@@ -37,7 +39,7 @@ export const useTransactions = (subaccount = 0) => {
           return accum;
         }
 
-        accum.push(tx.txInfo);
+        accum.push(penumbraTxToTaxEvent(tx.txInfo, getMetadata));
         return accum;
       }, []);
 

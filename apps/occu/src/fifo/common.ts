@@ -43,8 +43,8 @@ export interface TaxTransactionEvent {
   type: string;
   amount_in: number;
   asset_in: string;
-  amount_out: number;
-  asset_out: string;
+  amount_out?: number;
+  asset_out?: string;
   fee_amount: number;
   fee_asset: string;
   internal?: boolean;

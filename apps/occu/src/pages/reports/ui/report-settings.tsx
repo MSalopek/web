@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text } from '@penumbra-zone/ui/Text';
 import { Toggle } from '@penumbra-zone/ui/Toggle';
 import { Cog, FileChartLine } from 'lucide-react';

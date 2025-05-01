@@ -255,7 +255,7 @@ export function getFeeAmount(info: TransactionInfo) {
 }
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- TS is being annoying here */
-export function penumbraTxToTaxEvent(info: TransactionInfo) {
+export function penumbraTxToTaxEvent(info: TransactionInfo, getMetadata?: GetMetadata) {
   const { type, action } = classifyTransaction(info.view);
 
   // by default every Tx is an expense because it has fees
