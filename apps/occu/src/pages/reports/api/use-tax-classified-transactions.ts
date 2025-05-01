@@ -12,7 +12,7 @@ const STORAGE_KEY = 'tax-transactions';
 export const useTaxClassifiedTransactions = (
   subaccount = 0,
   getMetadata?: GetMetadata,
-  options?: { enabled?: boolean },
+  options?: { enabled?: boolean; startHeight?: number; endHeight?: number },
 ) => {
   return useInfiniteQuery<TaxTransactionEvent[]>({
     queryKey: ['txs', subaccount],
@@ -22,7 +22,12 @@ export const useTaxClassifiedTransactions = (
       return lastPage.length ? (lastPageParam as number) + 1 : undefined;
     },
     queryFn: async ({ pageParam }) => {
-      const res = await Array.fromAsync(penumbra.service(ViewService).transactionInfo({}));
+      const res = await Array.fromAsync(
+        penumbra.service(ViewService).transactionInfo({
+          startHeight: options?.startHeight ? BigInt(options.startHeight) : undefined,
+          endHeight: options?.endHeight ? BigInt(options.endHeight) : undefined,
+        }),
+      );
 
       // Filters and maps the array at the same time
       let reduced = res.reduce<TaxTransactionEvent[]>((accum, tx) => {
@@ -46,7 +51,7 @@ export const useTaxClassifiedTransactions = (
 export const useTaxClassifiedTransactionsWithLocalStorage = (
   subaccount = 0,
   getMetadata?: GetMetadata,
-  options?: { enabled?: boolean },
+  options?: { enabled?: boolean; startHeight?: number; endHeight?: number },
 ) => {
   return useInfiniteQuery<TaxTransactionEvent[]>({
     queryKey: ['txs', subaccount],
@@ -60,8 +65,10 @@ export const useTaxClassifiedTransactionsWithLocalStorage = (
       const storedData = localStorage.getItem(STORAGE_KEY);
       if (storedData) {
         const parsed = JSON.parse(storedData) as TaxTransactionEvent[];
-        const offset = BASE_LIMIT * (pageParam as number);
-        return parsed.slice(offset, offset + BASE_LIMIT);
+        if (parsed.length !== 0) {
+          const offset = BASE_LIMIT * (pageParam as number);
+          return parsed.slice(offset, offset + BASE_LIMIT);
+        }
       }
 
       // If no stored data, fetch from service
@@ -72,7 +79,16 @@ export const useTaxClassifiedTransactionsWithLocalStorage = (
         if (!tx.txInfo) {
           return accum;
         }
-
+        if (options?.startHeight) {
+          if (Number(tx.txInfo.height) < options.startHeight) {
+            return accum;
+          }
+        }
+        if (options?.endHeight) {
+          if (Number(tx.txInfo.height) > options.endHeight) {
+            return accum;
+          }
+        }
         accum.push(penumbraTxToTaxEvent(tx.txInfo, getMetadata));
         return accum;
       }, []);

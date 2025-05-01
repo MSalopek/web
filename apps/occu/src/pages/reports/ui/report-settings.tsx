@@ -23,7 +23,7 @@ interface TaxSettings {
 }
 
 // Add this custom hook
-const useTaxSettings = () => {
+export const useTaxSettings = () => {
   const [settings, setSettings] = useState<TaxSettings>(() => {
     const stored = localStorage.getItem('occu-tax-settings');
     if (stored) {
@@ -217,7 +217,9 @@ export const ReportSettings = observer(() => {
                       label='Count IBC withdrawal as disposal'
                       value={settings.ibcWithdrawalAsDisposal}
                       onChange={() =>
-                        updateSettings({ ibcWithdrawalAsDisposal: !settings.ibcWithdrawalAsDisposal })
+                        updateSettings({
+                          ibcWithdrawalAsDisposal: !settings.ibcWithdrawalAsDisposal,
+                        })
                       }
                     />
                   </div>

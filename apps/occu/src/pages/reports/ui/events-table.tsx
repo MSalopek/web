@@ -16,6 +16,8 @@ import Link from 'next/link';
 import { EllipsisVertical, FileSearch } from 'lucide-react';
 import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
 import { useUnifiedAssets } from '../api/use-unified-assets';
+import { useTaxSettings } from './report-settings';
+import { YEAR_BLOCK_INTERVALS } from '@/calculate-tax/constants';
 
 export interface TaxableTxEventSummaryProps {
   /** TransactionInfo protobuf message, needs `view` and `summary` fields filled to function correctly */
@@ -121,10 +123,16 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
 
 export const EventsTable = observer(() => {
   const { isPenumbraConnected, isLoading } = useUnifiedAssets();
+  const { settings } = useTaxSettings();
+  const year_interval = YEAR_BLOCK_INTERVALS[settings.year];
 
   const getMetadata = useGetMetadata();
   const { data: transactions } = useTaxClassifiedTransactionsWithLocalStorage(0, getMetadata, {
     enabled: isPenumbraConnected && !isLoading,
+    ...(year_interval && {
+      startHeight: year_interval.start,
+      endHeight: year_interval.end,
+    }),
   });
   return (
     <Card>
