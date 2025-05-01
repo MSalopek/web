@@ -10,11 +10,12 @@ import { Pill } from '@penumbra-zone/ui/Pill';
 
 import { useGetMetadata } from '@/shared/api/assets';
 import { observer } from 'mobx-react-lite';
-import { useTaxClassifiedTransactions } from '../api/use-tax-classified-transactions';
+import { useTaxClassifiedTransactionsWithLocalStorage } from '../api/use-tax-classified-transactions';
 import { Card } from '@penumbra-zone/ui/Card';
 import Link from 'next/link';
 import { EllipsisVertical, FileSearch } from 'lucide-react';
 import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
+import { useUnifiedAssets } from '../api/use-unified-assets';
 
 export interface TaxableTxEventSummaryProps {
   /** TransactionInfo protobuf message, needs `view` and `summary` fields filled to function correctly */
@@ -119,8 +120,12 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
 };
 
 export const EventsTable = observer(() => {
+  const { isPenumbraConnected, isLoading } = useUnifiedAssets();
+
   const getMetadata = useGetMetadata();
-  const { data: transactions } = useTaxClassifiedTransactions(0, getMetadata);
+  const { data: transactions } = useTaxClassifiedTransactionsWithLocalStorage(0, getMetadata, {
+    enabled: isPenumbraConnected && !isLoading,
+  });
   return (
     <Card>
       <div className='p-3'>
