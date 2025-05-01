@@ -11,8 +11,6 @@ import { IbcChainProvider } from '@/features/cosmos/chain-provider.tsx';
 import { ReportSettings } from './ui/report-settings';
 import { AssetsTable } from './ui/assets-table';
 import { useUnifiedAssets } from './api/use-unified-assets';
-import { AllTransactions } from './ui/transactions';
-import { Card } from '@penumbra-zone/ui/Card';
 import { EventsTable } from './ui/events-table';
 
 interface ReportsPageProps {

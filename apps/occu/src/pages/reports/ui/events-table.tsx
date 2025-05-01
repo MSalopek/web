@@ -13,7 +13,8 @@ import { observer } from 'mobx-react-lite';
 import { useTaxClassifiedTransactions } from '../api/use-tax-classified-transactions';
 import { Card } from '@penumbra-zone/ui/Card';
 import Link from 'next/link';
-import { FileSearch } from 'lucide-react';
+import { EllipsisVertical, FileSearch } from 'lucide-react';
+import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
 
 export interface TaxableTxEventSummaryProps {
   /** TransactionInfo protobuf message, needs `view` and `summary` fields filled to function correctly */
@@ -93,9 +94,23 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
         </Text>
       </TableCell>
       <TableCell variant={variant}>
-        <Link href={`/inspect/tx/${event.tx_hash}`}>
-          <Button actionType='accent' density='compact' iconOnly icon={FileSearch}>
-            Go to transaction details
+        <DropdownMenu>
+          <DropdownMenu.Trigger>
+            <Button iconOnly icon={EllipsisVertical}>
+              Actions
+            </Button>
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Content side='bottom' align='start'>
+            <DropdownMenu.Item actionType='accent'>Set Disposal</DropdownMenu.Item>
+            <DropdownMenu.Item actionType='success'>Set Income</DropdownMenu.Item>
+            <DropdownMenu.Item actionType='unshield'>Set Expense</DropdownMenu.Item>
+            <DropdownMenu.Item actionType='unshield'>Set Internal Transfer</DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu>
+        <Link href={`/inspect/tx/${event.tx_hash}`} className='inline-flex items-center gap-2'>
+          <Button iconOnly icon={FileSearch}>
+            Open Tx Details
           </Button>
         </Link>
       </TableCell>
@@ -120,7 +135,7 @@ export const EventsTable = observer(() => {
         </div>
       </div>
       <Density compact>
-        <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] overflow-y-auto overflow-x-auto'>
+        <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
           <TableCell heading>Height</TableCell>
           <TableCell heading>Event Type</TableCell>
           <TableCell heading>Tx Type</TableCell>
@@ -128,7 +143,8 @@ export const EventsTable = observer(() => {
           <TableCell heading>Amount Out</TableCell>
           <TableCell heading>Fee Amount</TableCell>
           <TableCell heading>Cost Basis</TableCell>
-          <TableCell heading>Actions</TableCell>
+          {/* empty cell for actions */}
+          <TableCell> </TableCell>
 
           {transactions?.pages.map(page =>
             page.map((tx, index) => (
