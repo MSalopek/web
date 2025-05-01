@@ -52,7 +52,7 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
 
   return (
-    <div className='grid grid-cols-subgrid col-span-8'>
+    <div className='grid grid-cols-subgrid col-span-8 transition-colors hover:bg-action-hoverOverlay'>
       <TableCell variant={variant}>
         <div className='flex items-center'>
           <Text variant={'smallTechnical'} color='text.secondary'>
@@ -105,7 +105,7 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
             <DropdownMenu.Item actionType='accent'>Set Disposal</DropdownMenu.Item>
             <DropdownMenu.Item actionType='success'>Set Income</DropdownMenu.Item>
             <DropdownMenu.Item actionType='unshield'>Set Expense</DropdownMenu.Item>
-            <DropdownMenu.Item actionType='unshield'>Set Internal Transfer</DropdownMenu.Item>
+            <DropdownMenu.Item actionType='unshield'>Set Rebalance</DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu>
         <Link href={`/inspect/tx/${event.tx_hash}`} className='inline-flex items-center gap-2'>
