@@ -18,6 +18,8 @@ interface TaxSettings {
   incomeRate: number;
   costBasis: 'FIFO' | 'LIFO' | 'HIFO' | 'ACB';
   feesAreCapitalGains: boolean;
+  ibcWithdrawalAsDisposal: boolean;
+  ibcReceiveAsIncome: boolean;
 }
 
 // Add this custom hook
@@ -55,6 +57,8 @@ const useTaxSettings = () => {
       incomeRate: 24,
       costBasis: 'FIFO',
       feesAreCapitalGains: false,
+      ibcWithdrawalAsDisposal: false,
+      ibcReceiveAsIncome: false,
     };
     localStorage.setItem('occu-tax-settings', JSON.stringify(defaultSettings));
     return defaultSettings;
@@ -207,8 +211,28 @@ export const ReportSettings = observer(() => {
                       }
                     />
                   </div>
+                  <div className='grid grid-cols-2 gap-2 items-center'>
+                    <Text color='text.primary'>Count IBC withdrawal as disposal</Text>
+                    <Toggle
+                      label='Count IBC withdrawal as disposal'
+                      value={settings.ibcWithdrawalAsDisposal}
+                      onChange={() =>
+                        updateSettings({ ibcWithdrawalAsDisposal: !settings.ibcWithdrawalAsDisposal })
+                      }
+                    />
+                  </div>
+                  <div className='grid grid-cols-2 gap-2 items-center'>
+                    <Text color='text.primary'>Count IBC receive as income</Text>
+                    <Toggle
+                      label='Count IBC receive as income'
+                      value={settings.ibcReceiveAsIncome}
+                      onChange={() =>
+                        updateSettings({ ibcReceiveAsIncome: !settings.ibcReceiveAsIncome })
+                      }
+                    />
+                  </div>
                 </div>
-                <Button actionType='accent'>Generate Report</Button>
+                <Button actionType='accent'>Load Transactions</Button>
               </div>
             </div>
           </div>
@@ -218,7 +242,7 @@ export const ReportSettings = observer(() => {
           <div className='space-y-2 text-3xl'>
             <Text xxl color='text.primary'>
               Connect your <span className='text-primary-light'>Prax Wallet </span>to access your
-              tax report settings and generate reports positions
+              reporting settings and transactions
             </Text>
           </div>
           <div className={'w-fit'}>
