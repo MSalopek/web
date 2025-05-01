@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 import { TaxTransactionEvent } from '@/calculate-tax/common';
 import { Button } from '@penumbra-zone/ui/Button';
 
@@ -20,12 +18,9 @@ import { useTaxSettings } from './report-settings';
 import { YEAR_BLOCK_INTERVALS } from '@/calculate-tax/constants';
 
 export interface TaxableTxEventSummaryProps {
-  /** TransactionInfo protobuf message, needs `view` and `summary` fields filled to function correctly */
   event: TaxTransactionEvent;
   isLastRow: boolean;
   onClick?: VoidFunction;
-  /** Markup to render on the right side of the component */
-  endAdornment?: ReactNode;
 }
 
 const EventTypePill = ({ type }: { type: string }) => {
@@ -66,9 +61,6 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
       <TableCell variant={variant}>
         <div className='flex flex-col'>
           <EventTypePill type={event.type} />
-          {/* <Text variant={'smallTechnical'} color='text.secondary'> */}
-          {/* {event.type} */}
-          {/* </Text> */}
         </div>
       </TableCell>
       <TableCell variant={variant}>
