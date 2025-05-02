@@ -9,7 +9,6 @@ export type MultipleBlockTimeApiResponse =
     }[]
   | { error: string };
 
-// TODO: add tanstack query
 export async function GET(
   _req: NextRequest,
 ): Promise<NextResponse<Serialized<MultipleBlockTimeApiResponse>>> {

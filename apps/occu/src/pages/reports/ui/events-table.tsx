@@ -50,13 +50,20 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
 
   return (
-    <div className='grid grid-cols-subgrid col-span-8 transition-colors hover:bg-action-hoverOverlay'>
+    <div className='grid grid-cols-subgrid col-span-9 transition-colors hover:bg-action-hoverOverlay'>
       <TableCell variant={variant}>
-        <div className='flex items-center'>
+        <Text variant={'smallTechnical'} color='text.secondary'>
+          {event.height}
+        </Text>
+      </TableCell>
+      <TableCell variant={variant}>
+        {event.date ? (
           <Text variant={'smallTechnical'} color='text.secondary'>
-            {event.height}
+            {typeof event.date === 'string' ? event.date : event.date.toISOString().split('T')[0]}
           </Text>
-        </div>
+        ) : (
+          '-'
+        )}
       </TableCell>
       <TableCell variant={variant}>
         <div className='flex flex-col'>
@@ -121,11 +128,13 @@ export const EventsTable = observer(() => {
   const getMetadata = useGetMetadata();
   const { data: transactions } = useTaxClassifiedTransactionsWithLocalStorage(0, getMetadata, {
     enabled: isPenumbraConnected && !isLoading,
+    fetchBlocks: true,
     ...(year_interval && {
       startHeight: year_interval.start,
       endHeight: year_interval.end,
     }),
   });
+
   return (
     <Card>
       <div className='p-3'>
@@ -139,9 +148,10 @@ export const EventsTable = observer(() => {
           </div>
         </div>
         <Density compact>
-          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
+          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
             <TableCell heading>Height</TableCell>
-            <TableCell heading>Event Type</TableCell>
+            <TableCell heading>Date</TableCell>
+            <TableCell heading>Tax Type</TableCell>
             <TableCell heading>Tx Type</TableCell>
             <TableCell heading>Amount In</TableCell>
             <TableCell heading>Amount Out</TableCell>

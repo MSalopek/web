@@ -4,6 +4,7 @@ import { penumbra } from '@/shared/const/penumbra';
 import { TaxTransactionEvent } from '@/calculate-tax/common';
 import { penumbraTxToTaxEvent } from '@/calculate-tax/transform';
 import { GetMetadata } from '@/shared/api/assets';
+import { MultipleBlockTimeApiResponse } from '../../../../app/api/blocktimes/route';
 
 const BASE_LIMIT = 1000;
 const BASE_PAGE = 0;
@@ -12,7 +13,12 @@ const STORAGE_KEY = 'tax-transactions';
 export const useTaxClassifiedTransactions = (
   subaccount = 0,
   getMetadata?: GetMetadata,
-  options?: { enabled?: boolean; startHeight?: number; endHeight?: number },
+  options?: {
+    enabled?: boolean;
+    startHeight?: number;
+    endHeight?: number;
+    fetchBlocks?: boolean;
+  },
 ) => {
   return useInfiniteQuery<TaxTransactionEvent[]>({
     queryKey: ['txs', subaccount],
@@ -51,7 +57,12 @@ export const useTaxClassifiedTransactions = (
 export const useTaxClassifiedTransactionsWithLocalStorage = (
   subaccount = 0,
   getMetadata?: GetMetadata,
-  options?: { enabled?: boolean; startHeight?: number; endHeight?: number },
+  options?: {
+    enabled?: boolean;
+    startHeight?: number;
+    endHeight?: number;
+    fetchBlocks?: boolean;
+  },
 ) => {
   return useInfiniteQuery<TaxTransactionEvent[]>({
     queryKey: ['txs', subaccount],
@@ -94,6 +105,37 @@ export const useTaxClassifiedTransactionsWithLocalStorage = (
       }, []);
 
       reduced = reduced.sort((a, b) => Number(b.height) - Number(a.height));
+      // Only fetch block times if fetchBlocks option is true
+      if (options?.fetchBlocks) {
+        try {
+          const heights = reduced.map(tx => tx.height?.toString());
+          const blockTimesResponse = await fetch(
+            `/api/blocktimes?heights=${heights.filter(h => h && h !== '').join(',')}`,
+          );
+          const blockTimes: MultipleBlockTimeApiResponse =
+            (await blockTimesResponse.json()) as MultipleBlockTimeApiResponse;
+
+          if (!('error' in blockTimes)) {
+            reduced = reduced.map(tx => {
+              const blockTime = blockTimes.find(
+                (bt: { height: string }) => bt.height === tx.height?.toString(),
+              )?.time;
+
+              // If we found a block time, convert it to a Date object and get just the date portion
+              const date = blockTime ? new Date(blockTime).toISOString().split('T')[0] : null;
+
+              return {
+                ...tx,
+                blockTime,
+                date: date ?? null,
+                timestamp: date ? new Date(date).getTime() : null,
+              };
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching block times', error);
+        }
+      }
 
       // Store the complete dataset in localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(reduced));

@@ -37,7 +37,7 @@ export const IncomeTaxActions = new Set(['receive', 'undelegateClaim', 'position
 export const DisposalTaxActions = new Set(['send', 'swap']);
 
 export interface TaxTransactionEvent {
-  date?: Date | null;
+  date?: Date | string | null;
   height?: number | string | null;
   tx_hash?: string | null;
   type: string;
