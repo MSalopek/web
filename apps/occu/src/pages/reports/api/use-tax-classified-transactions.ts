@@ -179,3 +179,21 @@ export const updateStoredTransaction = (
   localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
   return true;
 };
+
+export const updateTxType = (txHash: string, type: string) => {
+  const storedData = localStorage.getItem(STORAGE_KEY);
+  if (!storedData) {
+    return null;
+  }
+
+  const transactions: TaxTransactionEvent[] = JSON.parse(storedData) as TaxTransactionEvent[];
+  const index = transactions.findIndex(tx => tx.tx_hash === txHash);
+
+  if (index === -1) {
+    return null;
+  }
+
+  transactions[index] = { ...transactions[index], type };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+  return transactions; // Return the updated data
+};

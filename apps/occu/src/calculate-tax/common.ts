@@ -41,12 +41,12 @@ export interface TaxTransactionEvent {
   height?: number | string | null;
   tx_hash?: string | null;
   type: string;
-  amount_in: number;
-  asset_in: string;
+  amount_in?: number;
+  asset_in?: string;
   amount_out?: number;
   asset_out?: string;
-  fee_amount: number;
-  fee_asset: string;
+  fee_amount?: number;
+  fee_asset?: string;
   internal?: boolean;
 
   timestamp?: number | null;

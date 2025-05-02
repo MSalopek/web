@@ -8,7 +8,10 @@ import { Pill } from '@penumbra-zone/ui/Pill';
 
 import { useGetMetadata } from '@/shared/api/assets';
 import { observer } from 'mobx-react-lite';
-import { useTaxClassifiedTransactionsWithLocalStorage } from '../api/use-tax-classified-transactions';
+import {
+  updateTxType,
+  useTaxClassifiedTransactionsWithLocalStorage,
+} from '../api/use-tax-classified-transactions';
 import { Card } from '@penumbra-zone/ui/Card';
 import Link from 'next/link';
 import { EllipsisVertical, FileSearch } from 'lucide-react';
@@ -16,6 +19,7 @@ import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
 import { useUnifiedAssets } from '../api/use-unified-assets';
 import { useTaxSettings } from './report-settings';
 import { YEAR_BLOCK_INTERVALS } from '@/calculate-tax/constants';
+import { queryClient } from '@/shared/const/queryClient';
 
 export interface TaxableTxEventSummaryProps {
   event: TaxTransactionEvent;
@@ -48,6 +52,15 @@ const EventTypePill = ({ type }: { type: string }) => {
 
 const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
+
+  const handleSetType = async (type: string) => {
+    if (!event.tx_hash) {
+      return;
+    }
+    updateTxType(event.tx_hash, type);
+    // Add await to handle the Promise
+    await queryClient.invalidateQueries({ queryKey: ['txs'] });
+  };
 
   return (
     <div className='grid grid-cols-subgrid col-span-8 transition-colors hover:bg-action-hoverOverlay'>
@@ -99,10 +112,21 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Content side='bottom' align='start'>
-            <DropdownMenu.Item actionType='accent'>Set Disposal</DropdownMenu.Item>
-            <DropdownMenu.Item actionType='success'>Set Income</DropdownMenu.Item>
-            <DropdownMenu.Item actionType='unshield'>Set Expense</DropdownMenu.Item>
-            <DropdownMenu.Item actionType='unshield'>Set Rebalance</DropdownMenu.Item>
+            <DropdownMenu.Item actionType='accent' onSelect={() => void handleSetType('disposal')}>
+              Set Disposal
+            </DropdownMenu.Item>
+            <DropdownMenu.Item actionType='success' onSelect={() => void handleSetType('income')}>
+              Set Income
+            </DropdownMenu.Item>
+            <DropdownMenu.Item actionType='unshield' onSelect={() => void handleSetType('expense')}>
+              Set Expense
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              actionType='unshield'
+              onSelect={() => void handleSetType('rebalance')}
+            >
+              Set Rebalance
+            </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu>
         <Link href={`/inspect/tx/${event.tx_hash}`} className='inline-flex items-center gap-2'>
