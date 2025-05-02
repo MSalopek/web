@@ -1,0 +1,242 @@
+[
+    {
+        "symbol": "AUTISM",
+        "coingeckoId": "autism"
+    },
+    {
+        "symbol": "xATOM",
+        "coingeckoId": "astrovault-xatom"
+    },
+    {
+        "symbol": "TRX",
+        "coingeckoId": "tron"
+    },
+    {
+        "symbol": "milkTIA",
+        "coingeckoId": "milkyway-staked-tia"
+    },
+    {
+        "symbol": "LAB",
+        "coingeckoId": "mad-scientists"
+    },
+    {
+        "symbol": "SPICE",
+        "coingeckoId": "spice-2"
+    },
+    {
+        "symbol": "allARB",
+        "coingeckoId": "arbitrum"
+    },
+    {
+        "symbol": "axlUSDC",
+        "coingeckoId": "axlusdc"
+    },
+    {
+        "symbol": "ckBTC",
+        "coingeckoId": "chain-key-bitcoin"
+    },
+    {
+        "symbol": "ATOM",
+        "coingeckoId": "cosmos"
+    },
+    {
+        "symbol": "TON",
+        "coingeckoId": "the-open-network"
+    },
+    {
+        "symbol": "AXL",
+        "coingeckoId": "axelar"
+    },
+    {
+        "symbol": "stOSMO",
+        "coingeckoId": "stride-staked-osmo"
+    },
+    {
+        "symbol": "STRD",
+        "coingeckoId": "stride"
+    },
+    {
+        "symbol": "OSMO",
+        "coingeckoId": "osmosis"
+    },
+    {
+        "symbol": "stJUNO",
+        "coingeckoId": "stride-staked-juno"
+    },
+    {
+        "symbol": "UM",
+        "coingeckoId": "penumbra"
+    },
+    {
+        "symbol": "SOL",
+        "coingeckoId": "osmosis-allsol"
+    },
+    {
+        "symbol": "LVN",
+        "coingeckoId": "levana-protocol"
+    },
+    {
+        "symbol": "allPEPE",
+        "coingeckoId": "osmosis-allpepe"
+    },
+    {
+        "symbol": "NEWT",
+        "coingeckoId": "newt"
+    },
+    {
+        "symbol": "MARS",
+        "coingeckoId": "mars-protocol-a7fcbcfb-fd61-4017-92f0-7ee9f9cc6da3"
+    },
+    {
+        "symbol": "allBTC",
+        "coingeckoId": "osmosis-allbtc"
+    },
+    {
+        "symbol": "allOP",
+        "coingeckoId": "osmosis-allop"
+    },
+    {
+        "symbol": "axlWBTC",
+        "coingeckoId": "axlwbtc"
+    },
+    {
+        "symbol": "allDOT",
+        "coingeckoId": "osmosis-alldot"
+    },
+    {
+        "symbol": "allUNI",
+        "coingeckoId": "uniswap"
+    },
+    {
+        "symbol": "TRX.rt",
+        "coingeckoId": "tron"
+    },
+    {
+        "symbol": "osmoWBTC",
+        "coingeckoId": "wrapped-bitcoin"
+    },
+    {
+        "symbol": "AXV",
+        "coingeckoId": "astrovault"
+    },
+    {
+        "symbol": "TIA",
+        "coingeckoId": "celestia"
+    },
+    {
+        "symbol": "WETH",
+        "coingeckoId": "axlweth"
+    },
+    {
+        "symbol": "CDT",
+        "coingeckoId": "collateralized-debt-token"
+    },
+    {
+        "symbol": "stSTARS",
+        "coingeckoId": "stride-staked-stars"
+    },
+    {
+        "symbol": "IBCX",
+        "coingeckoId": "ibc-index"
+    },
+    {
+        "symbol": "INJ",
+        "coingeckoId": "injective-protocol"
+    },
+    {
+        "symbol": "RBTC.rt",
+        "coingeckoId": "rootstock"
+    },
+    {
+        "symbol": "stUMEE",
+        "coingeckoId": "stride-staked-umee"
+    },
+    {
+        "symbol": "stATOM",
+        "coingeckoId": "stride-staked-atom"
+    },
+    {
+        "symbol": "USDC",
+        "coingeckoId": "usd-coin"
+    },
+    {
+        "symbol": "stISLM",
+        "coingeckoId": "stride-staked-islm"
+    },
+    {
+        "symbol": "EURe",
+        "coingeckoId": "monerium-eur-money"
+    },
+    {
+        "symbol": "DYDX",
+        "coingeckoId": "dydx-chain"
+    },
+    {
+        "symbol": "allLINK",
+        "coingeckoId": "osmosis-alllink"
+    },
+    {
+        "symbol": "allSHIB",
+        "coingeckoId": "osmosis-allshib"
+    },
+    {
+        "symbol": "ampOSMO",
+        "coingeckoId": "eris-amplified-osmo"
+    },
+    {
+        "symbol": "bOSMO",
+        "coingeckoId": "backbone-staked-osmo"
+    },
+    {
+        "symbol": "dATOM",
+        "coingeckoId": "drop-staked-atom"
+    },
+    {
+        "symbol": "AVAIL.eth.rt",
+        "coingeckoId": "avail"
+    },
+    {
+        "symbol": "MBRN",
+        "coingeckoId": "membrane"
+    },
+    {
+        "symbol": "ASTRO",
+        "coingeckoId": "astroport-fi"
+    },
+    {
+        "symbol": "NINJA",
+        "coingeckoId": "dog-wif-nuchucks"
+    },
+    {
+        "symbol": "stSOMM",
+        "coingeckoId": "stride-staked-sommelier"
+    },
+    {
+        "symbol": "NTRN",
+        "coingeckoId": "neutron-3"
+    },
+    {
+        "symbol": "allUSDT",
+        "coingeckoId": "osmosis-allusdt"
+    },
+    {
+        "symbol": "HAVA",
+        "coingeckoId": "hava-coin"
+    },
+    {
+        "symbol": "axlUSDT",
+        "coingeckoId": "axelar-usdt"
+    },
+    {
+        "symbol": "allETH",
+        "coingeckoId": "osmosis-alleth"
+    },
+    {
+        "symbol": "ION",
+        "coingeckoId": "ion"
+    },
+    {
+        "symbol": "USDY",
+        "coingeckoId": "ondo-us-dollar-yield"
+    }
+]
