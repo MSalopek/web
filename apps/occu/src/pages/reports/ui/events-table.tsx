@@ -50,7 +50,7 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
 
   return (
-    <div className='grid grid-cols-subgrid col-span-9 transition-colors hover:bg-action-hoverOverlay'>
+    <div className='grid grid-cols-subgrid col-span-8 transition-colors hover:bg-action-hoverOverlay'>
       <TableCell variant={variant}>
         <Text variant={'smallTechnical'} color='text.secondary'>
           {event.height}
@@ -88,11 +88,6 @@ const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
       <TableCell variant={variant}>
         <Text variant={'smallTechnical'} color='text.secondary'>
           {event.fee_amount ? `${event.fee_amount} UM` : '-'}
-        </Text>
-      </TableCell>
-      <TableCell variant={variant}>
-        <Text variant={'smallTechnical'} color='text.secondary'>
-          -
         </Text>
       </TableCell>
       <TableCell variant={variant}>
@@ -148,7 +143,7 @@ export const EventsTable = observer(() => {
           </div>
         </div>
         <Density compact>
-          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
+          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
             <TableCell heading>Height</TableCell>
             <TableCell heading>Date</TableCell>
             <TableCell heading>Tax Type</TableCell>
@@ -156,7 +151,6 @@ export const EventsTable = observer(() => {
             <TableCell heading>Amount In</TableCell>
             <TableCell heading>Amount Out</TableCell>
             <TableCell heading>Fee Amount</TableCell>
-            <TableCell heading>Cost Basis</TableCell>
             {/* empty cell for actions */}
             <TableCell> </TableCell>
 
