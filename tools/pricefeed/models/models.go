@@ -9,22 +9,22 @@ type PriceSource struct {
 }
 
 type Token struct {
-	ID          int64  `json:"id"`
+	ID          int64  `json:"id,omitempty"`
 	Symbol      string `json:"symbol"`
 	Name        string `json:"name"`
 	CoingeckoID string `json:"coingecko_id"`
 }
 
 type TokenPrice struct {
-	ID       int64     `json:"id"`
-	TokenID  int64     `json:"token_id"`
+	ID       int64     `json:"id,omitempty"`
+	TokenID  int64     `json:"token_id,omitempty"`
 	PriceUSD float64   `json:"price_usd"`
-	SourceID int64     `json:"source_id"`
+	SourceID int64     `json:"source_id,omitempty"`
 	Date     time.Time `json:"date"`
 }
 
 type ExchangeRate struct {
-	ID             int64     `json:"id"`
+	ID             int64     `json:"id,omitempty"`
 	BaseCurrency   string    `json:"base_currency"`
 	TargetCurrency string    `json:"target_currency"`
 	Rate           float64   `json:"rate"`
