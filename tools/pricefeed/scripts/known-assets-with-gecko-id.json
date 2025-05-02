@@ -100,10 +100,6 @@
         "coingeckoId": "axlwbtc"
     },
     {
-        "symbol": "allDOT",
-        "coingeckoId": "osmosis-alldot"
-    },
-    {
         "symbol": "allUNI",
         "coingeckoId": "uniswap"
     },

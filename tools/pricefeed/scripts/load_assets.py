@@ -93,7 +93,10 @@ def fetch_asset_prices(
 
 
 def load_prices_to_db(
-    db_path: str, token_symbol: str, prices: List[CoingeckoPriceDataWithDate]
+    db_path: str,
+    token_symbol: str,
+    prices: List[CoingeckoPriceDataWithDate],
+    upsert: bool = False,
 ):
     """
     Load prices into the database for a specific token.
@@ -118,8 +121,13 @@ def load_prices_to_db(
         insert_query = """
             INSERT INTO token_prices (token_id, price_usd, source_id, date)
             VALUES (?, ?, 1, ?)
-            ON CONFLICT (token_id, source_id, date) DO NOTHING
         """
+        # Modify the insert statement based on upsert parameter
+        if upsert:
+            print("Updating prices for", token_symbol)
+            insert_query += " ON CONFLICT (token_id, source_id, date) DO UPDATE SET price_usd = excluded.price_usd"
+        else:
+            insert_query += " ON CONFLICT (token_id, source_id, date) DO NOTHING"
 
         # Prepare batch of values
         values = [(token_id, price.price_usd, price.date) for price in prices]

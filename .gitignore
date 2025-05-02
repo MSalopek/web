@@ -76,3 +76,4 @@ packages/protobuf/proto
 scripts/private
 asset_prices
 .venv
+__pycache__
