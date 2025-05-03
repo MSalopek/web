@@ -1,18 +1,18 @@
-import { Transaction } from './common';
+import { TaxTransactionEvent } from './common';
 
 /* prettier-ignore-start */
-export const case_income_same_day_2_assets: Transaction[] = [
+export const case_income_same_day_2_assets: TaxTransactionEvent[] = [
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 100, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     { date: new Date(2024, 0, 1), timestamp: 2, type: "receive", amount_in: 200, asset_in: "OSMO", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_income_same_day_1_asset: Transaction[] = [
+export const case_income_same_day_1_asset: TaxTransactionEvent[] = [
     // treated as 2 separate events because the price can be different
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 100, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     { date: new Date(2024, 0, 1), timestamp: 2, type: "receive", amount_in: 200, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_income: Transaction[] = [
+export const case_income: TaxTransactionEvent[] = [
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 100, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     { date: new Date(2024, 0, 2), timestamp: 2, type: "receive", amount_in: 200, asset_in: "OSMO", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     { date: new Date(2024, 0, 3), timestamp: 3, type: "receive", amount_in: 150, asset_in: "UM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
@@ -20,15 +20,15 @@ export const case_income: Transaction[] = [
 ];
 
 // non-taxable acquisitions -> e.g. rebalance/send from another wallet owned by the same person
-export const case_receives_internal: Transaction[] = [
+export const case_receives_internal: TaxTransactionEvent[] = [
     { date: new Date(2024, 0, 15), timestamp: 1, type: "receive", amount_in: 10, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 20), timestamp: 2, type: "receive", amount_in: 20, asset_in: "OSMO", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 25), timestamp: 3, type: "receive", amount_in: 30, asset_in: "UM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
 ];
 
-export const case_income_and_internals: Transaction[] = [...case_income, ...case_receives_internal];
+export const case_income_and_internals: TaxTransactionEvent[] = [...case_income, ...case_receives_internal];
 
-export const case_single_asset_spend: Transaction[] = [
+export const case_single_asset_spend: TaxTransactionEvent[] = [
     // the first one is internal and it sets the initial inventory balance
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 10), timestamp: 2, type: "staking_reward", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
@@ -37,14 +37,14 @@ export const case_single_asset_spend: Transaction[] = [
     { date: new Date(2024, 0, 18), timestamp: 4, type: "receive", amount_in: 5, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_swap: Transaction[] = [
+export const case_swap: TaxTransactionEvent[] = [
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 10), timestamp: 2, type: "staking_reward", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     // Taxable income
     { date: new Date(2024, 0, 18), timestamp: 4, type: "swap", amount_out: 1, asset_out: "ATOM", amount_in: 5, asset_in: "OSMO", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_swap_multilot_same_asset: Transaction[] = [
+export const case_swap_multilot_same_asset: TaxTransactionEvent[] = [
     // swap is 1 ATOM -> 5 OSMO -> this first Tx should remain in the lot with 9 ATOM
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 10, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 10), timestamp: 2, type: "staking_reward", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
@@ -52,14 +52,14 @@ export const case_swap_multilot_same_asset: Transaction[] = [
     { date: new Date(2024, 0, 18), timestamp: 4, type: "swap", amount_out: 1, asset_out: "ATOM", amount_in: 5, asset_in: "OSMO", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_swap_spend_multiple_lots: Transaction[] = [
+export const case_swap_spend_multiple_lots: TaxTransactionEvent[] = [
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 1, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 10), timestamp: 2, type: "staking_reward", amount_in: 2, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "" },
     // first lot is spent in full, the second one is partially spent
     { date: new Date(2024, 0, 18), timestamp: 4, type: "swap", amount_out: 2, asset_out: "ATOM", amount_in: 10, asset_in: "OSMO", fee_amount: 0, fee_asset: "" },
 ];
 
-export const case_multi_asset_complex: Transaction[] = [
+export const case_multi_asset_complex: TaxTransactionEvent[] = [
     // Acquisitions -> internal transfer from another wallet -> not a tax event
     { date: new Date(2024, 0, 1), timestamp: 1, type: "receive", amount_in: 100, asset_in: "ATOM", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },
     { date: new Date(2024, 0, 2), timestamp: 2, type: "receive", amount_in: 200, asset_in: "OSMO", amount_out: 0, asset_out: "", fee_amount: 0, fee_asset: "", internal: true },

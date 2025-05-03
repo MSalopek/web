@@ -183,8 +183,8 @@ const prices: Record<string, Record<string, number>> = {
   },
 };
 
-export function mockGetPrice(asset: string, date: Date): number {
-  const dateString = date.toISOString().split('T')[0];
+export function mockGetPrice(asset: string, date: Date | string): number {
+  const dateString = typeof date === 'string' ? date : date.toISOString().split('T')[0];
   if (!dateString) {
     throw new Error('Invalid date');
   }

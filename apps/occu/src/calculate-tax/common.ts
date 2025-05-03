@@ -10,28 +10,6 @@ export const default_tax_rates: Record<string, TaxRate> = {
 
 export const transaction_type = ['income', 'disposal', 'acquisition', 'expense', 'rebalance'];
 
-export const disposal_header = [
-  'Date Acquired',
-  'Date Sold',
-  'Asset',
-  'Amount',
-  'Price Acquired (USD)',
-  'Price Disposed (USD)',
-  'Total Cost Basis',
-  'Total Proceeds',
-  'PnL',
-];
-
-export const income_header = ['Date', 'Asset', 'Amount', 'Price (USD)', 'Total Value (USD)'];
-
-export const inventory_header = [
-  'Asset',
-  'Amount',
-  'Price (USD)',
-  'Total Cost Basis',
-  'Date Acquired',
-];
-
 // Actions that are not in these two sets are considered to be expenses
 export const IncomeTaxActions = new Set(['receive', 'undelegateClaim', 'positionRewardClaim']);
 export const DisposalTaxActions = new Set(['send', 'swap']);
@@ -54,8 +32,8 @@ export interface TaxTransactionEvent {
 }
 
 export interface Disposal {
-  date_acquired: Date | null;
-  date_sold: Date | null;
+  date_acquired: Date | string | null;
+  date_sold: Date | string | null;
   amount: number;
   asset: string;
   price_acquired: number;
@@ -67,8 +45,8 @@ export interface Disposal {
 }
 
 export interface Income {
-  height?: number | null;
-  date?: Date | null;
+  height?: number | string | null;
+  date?: Date | string | null;
   amount: number;
   asset: string;
   price: number;
@@ -85,8 +63,8 @@ export interface Expense {
 }
 
 export interface InventoryLot {
-  height?: number | null;
-  date?: Date | null;
+  height?: number | string | null;
+  date?: Date | string | null;
   amount: number;
   price: number;
   txs?: TaxTransactionEvent | TaxTransactionEvent[] | null;
@@ -95,8 +73,8 @@ export interface InventoryLot {
 
 // helper for tracking the spends of particular inventory lots
 export interface LotSpend {
-  height?: number | null;
-  date?: Date | null;
+  height?: number | string | null;
+  date?: Date | string | null;
   asset: string;
   amount_spent: number;
   price: number;
@@ -130,7 +108,7 @@ export function apply_tax_rates(
       if (
         disposal.date_sold &&
         disposal.date_acquired &&
-        (disposal.date_sold.getTime() - disposal.date_acquired.getTime()) /
+        (new Date(disposal.date_sold).getTime() - new Date(disposal.date_acquired).getTime()) /
           (1000 * 60 * 60 * 24 * 365.0) <=
           tax_rate.duration
       ) {
@@ -183,50 +161,4 @@ export function filterTransactionsByDate(
   end_date: Date,
 ): TaxTransactionEvent[] {
   return transactions.filter(tx => tx.date && start_date <= tx.date && tx.date <= end_date);
-}
-
-export function disposalsToCsvRows(disposals: Disposal[]): string[][] {
-  return disposals.map(d => {
-    const total_cost = d.price_acquired * d.amount;
-    const proceeds = d.price_disposed * d.amount;
-    return [
-      d.date_acquired ? d.date_acquired.toISOString() : '',
-      d.date_sold ? d.date_sold.toISOString() : '',
-      d.asset,
-      d.amount.toFixed(8),
-      d.price_acquired.toFixed(8),
-      d.price_disposed.toFixed(8),
-      total_cost.toFixed(2),
-      proceeds.toFixed(2),
-      d.pnl.toFixed(2),
-    ];
-  });
-}
-
-export function incomesToCsvRows(incomes: Income[]): string[][] {
-  return incomes.map(inc => {
-    const total_value = inc.amount * inc.price;
-    return [
-      inc.date ? inc.date.toISOString() : '',
-      inc.asset,
-      inc.amount.toFixed(8),
-      inc.price.toFixed(8),
-      total_value.toFixed(2),
-    ];
-  });
-}
-
-export function inventoryToCsvRows(inventory: Record<string, InventoryLot[]>): string[][] {
-  return Object.entries(inventory).flatMap(([asset, lots]) =>
-    lots.map(lot => {
-      const total_cost = lot.amount * lot.price;
-      return [
-        asset,
-        lot.amount.toFixed(8),
-        lot.price.toFixed(8),
-        total_cost.toFixed(2),
-        lot.date ? lot.date.toISOString() : '',
-      ];
-    }),
-  );
 }
