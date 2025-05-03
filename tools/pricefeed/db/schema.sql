@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS tokens (
     CONSTRAINT idx_symbol UNIQUE (symbol)
 );
 
+CREATE INDEX IF NOT EXISTS idx_symbol ON tokens(symbol);
+
 CREATE TABLE IF NOT EXISTS token_prices (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     token_id INTEGER NOT NULL,
