@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serialize, Serialized } from '@/shared/utils/serializer';
 
-// symbol -> { coingeckoId, prices }
-export type HistoricPrices = Record<
-  string,
-  {
-    prices: Record<string, number>;
-    coingeckoId?: string;
-  }
->;
+export type PricesByDate = Record<string, number>;
+export interface TokenPriceList {
+  prices: PricesByDate;
+  coingeckoId?: string;
+}
 
-export type HistoricPricesResponse = Serialized<HistoricPrices> | { error: string };
+// symbol -> { coingeckoId, prices }
+export type TokenHistoricPrices = Record<string, TokenPriceList>;
+
+export type HistoricPricesResponse = Serialized<TokenHistoricPrices> | { error: string };
 
 export const GET = async (req: NextRequest): Promise<NextResponse<HistoricPricesResponse>> => {
   try {
@@ -22,7 +22,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse<HistoricPrices
     const idsArray = ids.split(',');
     const pricesData = await Promise.all(idsArray.map(getHistoricPrices));
 
-    const result: HistoricPrices = {};
+    const result: TokenHistoricPrices = {};
     idsArray.forEach((symbol, index) => {
       const prices = pricesData[index];
       if (prices) {

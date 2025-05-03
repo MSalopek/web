@@ -17,15 +17,23 @@ import Link from 'next/link';
 import { EllipsisVertical, FileSearch } from 'lucide-react';
 import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
 import { useUnifiedAssets } from '../api/use-unified-assets';
-import { useTaxSettings } from './report-settings';
+import { TaxSettings, useTaxSettings } from './report-settings';
 import { YEAR_BLOCK_INTERVALS } from '@/calculate-tax/constants';
 import { queryClient } from '@/shared/const/queryClient';
 import { useMemo } from 'react';
 import { useHistoricAssetPrices } from '../api/use-historic-prices';
+import { calculateFifo, TaxReportData } from '@/calculate-tax/fifo';
+import { TokenPriceList } from '@/shared/api/server/price-history/assets';
 export interface TaxableTxEventSummaryProps {
   event: TaxTransactionEvent;
   isLastRow: boolean;
   onClick?: VoidFunction;
+}
+
+export interface LocalStorageTaxReportData {
+  year: number | string;
+  report: TaxReportData;
+  settings: TaxSettings;
 }
 
 const EventTypePill = ({ type }: { type: string }) => {
@@ -182,6 +190,39 @@ export const EventsTable = observer(() => {
     enabled: transactions && transactions.pages.length > 0 && uniqueAssets.length > 0,
   });
 
+  // @ts-ignore - prices type is complex and needs refinement
+  const getPrice = (asset: string, date: string) => {
+    if (isPricesLoading) {
+      return 0;
+    }
+    // @ts-ignore - assetData type needs refinement
+    const assetData: TokenPriceList = prices[asset] as TokenPriceList;
+    // @ts-ignore - optional chaining is actually needed here
+    return assetData.prices[date] ?? 0;
+  };
+
+  const onGenerateReport = () => {
+    const txs = transactions?.pages.flat();
+    if (!txs) {
+      return;
+    }
+    const result = calculateFifo(txs, {}, getPrice);
+
+    const localReportsData = localStorage.getItem('tax-reports-by-year');
+    const localReports: Record<string, LocalStorageTaxReportData> | null = localReportsData
+      ? (JSON.parse(localReportsData) as Record<string, LocalStorageTaxReportData>)
+      : {};
+
+    localReports[settings.year.toString()] = {
+      year: settings.year,
+      report: result,
+      settings,
+    };
+
+    // Store back in localStorage
+    localStorage.setItem('tax-reports-by-year', JSON.stringify(localReports));
+  };
+
   return (
     <Card>
       <div className='p-3'>
@@ -198,7 +239,9 @@ export const EventsTable = observer(() => {
             </Text>
           </div>
           <div className='flex gap-2'>
-            <Button density='compact'>Generate Report</Button>
+            <Button density='compact' onClick={onGenerateReport}>
+              Generate Report
+            </Button>
             {/* <Button density='compact'>Export CSV</Button> */}
           </div>
         </div>
@@ -214,15 +257,28 @@ export const EventsTable = observer(() => {
             {/* empty cell for actions */}
             <TableCell> </TableCell>
 
-            {transactions?.pages.map(page =>
-              page.map((tx, index) => (
-                <EventRow
-                  key={`${tx.tx_hash}-${index}`}
-                  event={tx}
-                  isLastRow={index === page.length - 1}
-                />
-              )),
-            )}
+            {isLoading && isPricesLoading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <div className='grid grid-cols-subgrid col-span-8' key={index}>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                    <TableCell loading>&nbsp;</TableCell>
+                  </div>
+                ))
+              : transactions?.pages.map(page =>
+                  page.map((tx, index) => (
+                    <EventRow
+                      key={`${tx.tx_hash}-${index}`}
+                      event={tx}
+                      isLastRow={index === page.length - 1}
+                    />
+                  )),
+                )}
           </div>
         </Density>
       </div>

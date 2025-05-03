@@ -10,7 +10,7 @@ import { TextInput } from '@penumbra-zone/ui/TextInput';
 import { DropdownMenu } from '@penumbra-zone/ui/DropdownMenu';
 import { Button } from '@penumbra-zone/ui/Button';
 
-interface TaxSettings {
+export interface TaxSettings {
   year: number;
   shortRate: number;
   longRate: number;

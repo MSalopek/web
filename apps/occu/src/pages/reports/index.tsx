@@ -9,9 +9,10 @@ import { Density } from '@penumbra-zone/ui/Density';
 import { useRegistry } from '@/shared/api/registry.ts';
 import { IbcChainProvider } from '@/features/cosmos/chain-provider.tsx';
 import { ReportSettings } from './ui/report-settings';
-import { AssetsTable } from './ui/assets-table';
 import { useUnifiedAssets } from './api/use-unified-assets';
 import { EventsTable } from './ui/events-table';
+import { ReportsList } from './ui/report';
+// import { AssetsTable } from './ui/assets-table';
 
 interface ReportsPageProps {
   isMobile: boolean;
@@ -75,7 +76,8 @@ const DesktopReportsPage = observer(() => {
       <ReportSettings />
       {isPenumbraConnected && (
         <>
-          <AssetsTable />
+          <ReportsList />
+          {/* <AssetsTable /> */}
           <EventsTable />
         </>
       )}

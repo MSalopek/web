@@ -2,14 +2,24 @@ import { TaxTransactionEvent, Disposal, Income, InventoryLot, LotSpend } from '.
 
 type GetPriceFunction = (asset: string, date: string) => number;
 
+export interface TaxReportData {
+  incomes: Income[];
+  disposals: Disposal[];
+  fees: Disposal[];
+  expenses: Disposal[];
+  inventory: Record<string, InventoryLot[]>;
+}
+
 export function calculateFifo(
   transactions: TaxTransactionEvent[],
   startingInventory: Record<string, InventoryLot[]>,
   getPrice: GetPriceFunction,
-): [Income[], Disposal[], Record<string, InventoryLot[]>] {
+): TaxReportData {
   const inventory: Record<string, InventoryLot[]> = {};
   const incomes: Income[] = [];
   const disposals: Disposal[] = [];
+  const fees: Disposal[] = [];
+  const expenses: Disposal[] = [];
 
   // Initialize inventory from starting inventory
   Object.entries(startingInventory).forEach(([asset, lots]) => {
@@ -18,15 +28,15 @@ export function calculateFifo(
 
   // Sort transactions by date
   const sortedTransactions = [...transactions].sort((a, b) => {
-    const dateA = a.date ? new Date(a.date) : new Date(0);
-    const dateB = b.date ? new Date(b.date) : new Date(0);
-    return dateA.getTime() - dateB.getTime();
+    const heightA = Number(a.height ?? 0);
+    const heightB = Number(b.height ?? 0);
+    return heightA - heightB;
   });
 
   for (const tx of sortedTransactions) {
-    const txType = classifyTransaction(tx);
+    console.log('HANDLE', tx.type, tx.height, tx.tx_hash);
 
-    switch (txType) {
+    switch (tx.type) {
       case 'income':
         handleIncome(tx, incomes, getPrice);
         handleAcquisition(tx, inventory, getPrice);
@@ -46,28 +56,24 @@ export function calculateFifo(
       case 'swap':
         handleSwap(tx, inventory, disposals, getPrice);
         break;
+      case 'expense':
+        // Edgecase: if the amount_out is 0 then the Tx just incurred a fee
+        // there is no need to process the Tx further
+        // the transaction will not be in the Tx list because it already shows up in the fees list
+        if (tx.amount_out && tx.amount_out > 0) {
+          handleExpense(tx, inventory, expenses, getPrice);
+        }
+        break;
       default:
         throw new Error(`Unknown transaction type: ${tx.type}`);
     }
+
+    // all txs apply a fee
+    // fee can incurr a capital gain or loss depending on the Tax settings
+    handleFee(tx, inventory, fees, getPrice);
   }
 
-  return [incomes, disposals, inventory];
-}
-
-function classifyTransaction(tx: TaxTransactionEvent): string {
-  if (tx.type === 'receive') {
-    return tx.internal ? 'acquisition' : 'income';
-  }
-  if (tx.type === 'staking_reward') {
-    return 'income';
-  }
-  if (tx.type === 'send') {
-    return tx.internal ? 'rebalance' : 'disposal';
-  }
-  if (tx.type === 'swap') {
-    return 'swap';
-  }
-  return 'unknown';
+  return { incomes, disposals, fees, expenses, inventory };
 }
 
 function handleIncome(
@@ -255,6 +261,64 @@ function handleDisposal(
       pnl: pnl,
     });
   });
+}
+
+// fees are handled as disposals in case we need to track capital gains
+// and cost basis the moment they are spent
+function handleFee(
+  tx: TaxTransactionEvent,
+  inventory: Record<string, InventoryLot[]>,
+  fees: Disposal[],
+  getPrice: GetPriceFunction,
+): void {
+  if (!tx.fee_amount) {
+    throw Error(
+      `Fee amount is undefined for fees transaction: ${tx.height} - ${tx.type} - ${tx.tx_hash}`,
+    );
+  }
+
+  if (!tx.date) {
+    throw Error(
+      `Date is undefined for fees transaction: ${tx.height} - ${tx.type} - ${tx.tx_hash}`,
+    );
+  }
+
+  const fee_tx: TaxTransactionEvent = {
+    date: tx.date,
+    height: tx.height,
+    type: 'disposal',
+    asset_out: tx.fee_asset,
+    amount_out: tx.fee_amount,
+  };
+
+  handleDisposal(fee_tx, inventory, fees, getPrice);
+}
+
+function handleExpense(
+  tx: TaxTransactionEvent,
+  inventory: Record<string, InventoryLot[]>,
+  expenses: Disposal[],
+  getPrice: GetPriceFunction,
+): void {
+  if (!tx.amount_out) {
+    throw Error(
+      `Expense amount is undefined for expense transaction: ${tx.height} - ${tx.type} - ${tx.tx_hash}`,
+    );
+  }
+
+  if (!tx.asset_out) {
+    throw Error(
+      `Expense asset is undefined for expense transaction: ${tx.height} - ${tx.type} - ${tx.tx_hash}`,
+    );
+  }
+
+  if (!tx.date) {
+    throw Error(
+      `Date is undefined for fees transaction: ${tx.height} - ${tx.type} - ${tx.tx_hash}`,
+    );
+  }
+
+  handleDisposal(tx, inventory, expenses, getPrice);
 }
 
 function handleSwap(
