@@ -126,7 +126,7 @@ export const ReportsList = observer(() => {
           </div>
         </div>
         <Density compact>
-          <div className='grid grid-cols-[1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
+          <div className='grid grid-cols-[1fr_1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
             <TableCell heading>Year</TableCell>
             <TableCell heading>Cost Basis</TableCell>
             <TableCell heading>Long-term</TableCell>
