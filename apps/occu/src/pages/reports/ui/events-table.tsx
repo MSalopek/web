@@ -20,7 +20,8 @@ import { useUnifiedAssets } from '../api/use-unified-assets';
 import { useTaxSettings } from './report-settings';
 import { YEAR_BLOCK_INTERVALS } from '@/calculate-tax/constants';
 import { queryClient } from '@/shared/const/queryClient';
-
+import { useMemo } from 'react';
+import { useHistoricAssetPrices } from '../api/use-historic-prices';
 export interface TaxableTxEventSummaryProps {
   event: TaxTransactionEvent;
   isLastRow: boolean;
@@ -154,16 +155,51 @@ export const EventsTable = observer(() => {
     }),
   });
 
+  // Collect unique assets from transactions
+  const uniqueAssets = useMemo(() => {
+    if (!transactions?.pages) {
+      return [];
+    }
+
+    const assetSet = new Set<string>();
+
+    transactions.pages.forEach(page => {
+      page.forEach(tx => {
+        if (tx.asset_in) {
+          assetSet.add(tx.asset_in);
+        }
+        if (tx.asset_out) {
+          assetSet.add(tx.asset_out);
+        }
+      });
+    });
+
+    return Array.from(assetSet);
+  }, [transactions]);
+
+  // Fetch historic prices for all unique assets
+  const { prices, isLoading: isPricesLoading } = useHistoricAssetPrices(uniqueAssets, {
+    enabled: transactions && transactions.pages.length > 0 && uniqueAssets.length > 0,
+  });
+
   return (
     <Card>
       <div className='p-3'>
         <div className={'flex justify-between mb-4'}>
-          <Text as={'h4'} xxl color='text.primary'>
-            Tax Events
-          </Text>
+          <div className='flex flex-col w-2/3'>
+            <Text as={'h4'} xxl color='text.primary'>
+              Tax Events
+            </Text>
+            <Text variant={'detail'} color='text.secondary' as={'p'}>
+              Transactions are automatically classified based on the transaction type. You can
+              manually override the classification for any transaction if the default classification
+              does not match the actual transaction type or the intent of the transaction.<br></br>
+              Proceed with report generation after reviewing the transactions.
+            </Text>
+          </div>
           <div className='flex gap-2'>
-            <Button density='compact'>Export PDF</Button>
-            <Button density='compact'>Export CSV</Button>
+            <Button density='compact'>Generate Report</Button>
+            {/* <Button density='compact'>Export CSV</Button> */}
           </div>
         </div>
         <Density compact>

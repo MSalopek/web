@@ -36,7 +36,7 @@ export const useAssetPrices = (assets: Metadata[] = []) => {
         durationWindow: '1d', // Use 1-day window
       });
     },
-    staleTime: 60000, // 1 minute
+    staleTime: 60 * 60 * 1000 * 3, // 3 hours
     enabled: symbols.length > 0,
   });
 
