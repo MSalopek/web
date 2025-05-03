@@ -115,22 +115,6 @@ func (h *Handler) BatchCreateTokenPrices(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "batch created successfully"})
 }
 
-func (h *Handler) GetAllTokenPrices(c *gin.Context) {
-	symbol := c.Param("symbol")
-	if symbol == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid symbol"})
-		return
-	}
-
-	tp, err := h.db.GetAllTokenPrices(symbol)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "token price not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, tp)
-}
-
 // ExchangeRate handlers
 func (h *Handler) CreateExchangeRate(c *gin.Context) {
 	var er models.ExchangeRate
@@ -163,7 +147,30 @@ func (h *Handler) GetExchangeRate(c *gin.Context) {
 	c.JSON(http.StatusOK, er)
 }
 
-// GetTokenPriceByDate handles GET /token-prices/by-date/:symbol/:date
+func (h *Handler) GetAllTokenPrices(c *gin.Context) {
+	symbol := c.Param("symbol")
+	if symbol == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid symbol"})
+		return
+	}
+
+	prices, err := h.db.GetAllTokenPrices(symbol)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "token price not found"})
+		return
+	}
+
+	response := PricesResponse{}
+	for _, price := range prices {
+		response.Prices = append(response.Prices, PriceResponse{
+			Date:  price.Date.Format("2006-01-02"),
+			Price: price.PriceUSD,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 func (h *Handler) GetTokenPriceByDate(c *gin.Context) {
 	symbol := c.Param("symbol")
 	date := c.Param("date")
@@ -183,7 +190,10 @@ func (h *Handler) GetTokenPriceByDate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, price)
+	c.JSON(http.StatusOK, PriceResponse{
+		Date:  price.Date.Format("2006-01-02"),
+		Price: price.PriceUSD,
+	})
 }
 
 func (h *Handler) GetTokenPricesByDates(c *gin.Context) {
@@ -213,7 +223,15 @@ func (h *Handler) GetTokenPricesByDates(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, prices)
+	response := PricesResponse{}
+	for _, price := range prices {
+		response.Prices = append(response.Prices, PriceResponse{
+			Date:  price.Date.Format("2006-01-02"),
+			Price: price.PriceUSD,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func (h *Handler) ListTokens(c *gin.Context) {

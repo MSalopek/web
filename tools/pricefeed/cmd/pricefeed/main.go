@@ -5,6 +5,7 @@ import (
 	"log"
 	"pricefeed/db"
 	"pricefeed/handlers"
+	"pricefeed/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,25 +34,45 @@ func main() {
 	h := handlers.New(database)
 	r := gin.Default()
 
-	// Price Sources routes
-	// r.POST("/price-sources", h.CreatePriceSource)
-	r.GET("/price-sources/:id", h.GetPriceSource)
+	// Public routes
+	auth := r.Group("/auth")
+	{
+		auth.POST("/register", h.CreateAccount)
+		auth.GET("/verify", h.VerifyEmail)
+	}
 
-	// Tokens routes
-	// r.POST("/tokens", h.CreateToken)
-	r.GET("/tokens/list", h.ListTokens)
-	r.GET("/tokens/symbol/:symbol", h.GetToken)
+	// API key management routes (requires API key)
+	keys := r.Group("/keys")
+	keys.Use(middleware.RequireAPIKey(database))
+	{
+		keys.POST("/", h.CreateAPIKey)
+		keys.GET("/", h.ListAPIKeys)
+		keys.DELETE("/:id", h.DeleteAPIKey)
+	}
 
-	// Token Prices routes
-	// r.POST("/token-prices", h.CreateTokenPrice)
-	// r.POST("/token-prices/batch", h.BatchCreateTokenPrices)
-	r.GET("/token-prices/all/:symbol", h.GetAllTokenPrices)
-	r.GET("/token-prices/date/:symbol/:date", h.GetTokenPriceByDate)
-	r.GET("/token-prices/dates/:symbol", h.GetTokenPricesByDates)
+	// Protected routes (requires API key)
+	api := r.Group("/api")
+	api.Use(middleware.RequireAPIKey(database))
+	{
+		// Price Sources routes
+		api.GET("/price-sources/:id", h.GetPriceSource)
 
-	// Exchange Rates routes
-	// r.POST("/exchange-rates", h.CreateExchangeRate)
-	r.GET("/exchange-rates/:id", h.GetExchangeRate)
+		// Tokens routes
+		// api.POST("/tokens", h.CreateToken)
+		api.GET("/tokens/list", h.ListTokens)
+		api.GET("/tokens/symbol/:symbol", h.GetToken)
+
+		// Token Prices routes
+		// api.POST("/token-prices", h.CreateTokenPrice)
+		// api.POST("/token-prices/batch", h.BatchCreateTokenPrices)
+		api.GET("/token-prices/all/:symbol", h.GetAllTokenPrices)
+		api.GET("/token-prices/date/:symbol/:date", h.GetTokenPriceByDate)
+		api.GET("/token-prices/dates/:symbol", h.GetTokenPricesByDates)
+
+		// Exchange Rates routes
+		// api.POST("/exchange-rates", h.CreateExchangeRate)
+		api.GET("/exchange-rates/:id", h.GetExchangeRate)
+	}
 
 	if err := r.Run(":" + *port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

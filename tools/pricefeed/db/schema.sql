@@ -85,3 +85,30 @@ WHERE er.base_currency = 'USD';
 -- WHERE date >= date('now', '-7 days')
 -- GROUP BY token_symbol, date, target_currency
 -- ORDER BY token_symbol, date, target_currency;
+
+CREATE TABLE IF NOT EXISTS accounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email_verified BOOLEAN DEFAULT FALSE,
+    verification_token VARCHAR(64),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT idx_email UNIQUE (email)
+);
+
+CREATE TABLE IF NOT EXISTS api_keys (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_id INTEGER NOT NULL,
+    api_key VARCHAR(64) NOT NULL,
+    description TEXT,
+    valid_from DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    valid_to DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT idx_api_key UNIQUE (api_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_api_key ON api_keys(api_key);
+CREATE INDEX IF NOT EXISTS idx_account_id ON api_keys(account_id);
