@@ -70,7 +70,12 @@ const ReportRow = ({ report, year, settings, isLastRow }: ReportProps) => {
       </TableCell>
       <TableCell variant={variant}>
         <Text variant={'smallTechnical'} color='text.secondary'>
-          {settings?.costBasis || 'Unknown'}
+          {settings.costBasis}
+        </Text>
+      </TableCell>
+      <TableCell variant={variant}>
+        <Text variant={'smallTechnical'} color='text.secondary'>
+          {`after ${settings.longDuration.split('Y')[0]} year`}
         </Text>
       </TableCell>
       <TableCell variant={variant}>
@@ -124,12 +129,14 @@ export const ReportsList = observer(() => {
           <div className='grid grid-cols-[1fr_1fr_auto] overflow-y-auto overflow-x-auto'>
             <TableCell heading>Year</TableCell>
             <TableCell heading>Cost Basis</TableCell>
+            <TableCell heading>Long-term</TableCell>
             {/* empty cell for actions */}
             <TableCell> </TableCell>
 
             {isLoading
               ? Array.from({ length: 2 }).map((_, index) => (
                   <div className='grid grid-cols-subgrid col-span-3' key={index}>
+                    <TableCell loading>&nbsp;</TableCell>
                     <TableCell loading>&nbsp;</TableCell>
                     <TableCell loading>&nbsp;</TableCell>
                     <TableCell loading>&nbsp;</TableCell>
