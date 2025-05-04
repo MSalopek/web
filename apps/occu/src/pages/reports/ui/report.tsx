@@ -22,6 +22,7 @@ export interface ReportProps {
 
 export const useTaxReports = () => {
   const [reports, setReports] = useState<Record<string, LocalStorageTaxReportData>>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const localReportsData = localStorage.getItem('tax-reports-by-year');
@@ -37,9 +38,10 @@ export const useTaxReports = () => {
         setReports({});
       }
     }
+    setIsLoading(false);
   }, []);
 
-  return reports;
+  return { reports, isLoading };
 };
 
 const ReportRow = ({ report, year, settings, isLastRow }: ReportProps) => {

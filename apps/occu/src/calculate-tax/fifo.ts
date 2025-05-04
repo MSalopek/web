@@ -34,8 +34,6 @@ export function calculateFifo(
   });
 
   for (const tx of sortedTransactions) {
-    console.log('HANDLE', tx.type, tx.height, tx.tx_hash);
-
     switch (tx.type) {
       case 'income':
         handleIncome(tx, incomes, getPrice);

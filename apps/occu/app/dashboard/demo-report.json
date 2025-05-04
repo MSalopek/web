@@ -1,0 +1,307 @@
+{
+  "2025": {
+      "year": 2025,
+      "report": {
+          "incomes": [
+              {
+                  "date": "2025-01-02",
+                  "height": "2823823",
+                  "amount": 2124.999036,
+                  "asset": "UM",
+                  "price": 1.01068,
+                  "timestamp": 1735776000000
+              },
+              {
+                  "date": "2025-02-10",
+                  "height": "3461228",
+                  "amount": 0.1,
+                  "asset": "ATOM",
+                  "price": 4.57586,
+                  "timestamp": 1739145600000
+              },
+              {
+                  "date": "2025-03-21",
+                  "height": "4085039",
+                  "amount": 8928,
+                  "asset": "UM",
+                  "price": 0.56111,
+                  "timestamp": 1742515200000
+              },
+              {
+                  "date": "2025-04-08",
+                  "height": "4372689",
+                  "amount": 1100,
+                  "asset": "USDC",
+                  "price": 0.99993,
+                  "timestamp": 1744070400000
+              },
+              {
+                  "date": "2025-04-28",
+                  "height": "4687299",
+                  "amount": 28.605679,
+                  "asset": "UM",
+                  "price": 0.27001,
+                  "timestamp": 1745798400000
+              }
+          ],
+          "disposals": [
+              {
+                  "date_acquired": "2025-02-10",
+                  "date_sold": "2025-02-10",
+                  "amount": 0.1,
+                  "asset": "ATOM",
+                  "price_acquired": 4.57586,
+                  "price_disposed": 4.57586,
+                  "pnl": 0
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-03-13",
+                  "amount": 50,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.64703,
+                  "pnl": -18.1825
+              },
+              {
+                  "date_acquired": "2025-04-08",
+                  "date_sold": "2025-04-08",
+                  "amount": 1100,
+                  "asset": "USDC",
+                  "price_acquired": 0.99993,
+                  "price_disposed": 0.99993,
+                  "pnl": 0
+              }
+          ],
+          "fees": [
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-01-02",
+                  "amount": 0.000964,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 1.01068,
+                  "pnl": 0
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-02-10",
+                  "amount": 0.003379,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.87939,
+                  "pnl": -0.00044362891000000005
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-02-10",
+                  "amount": 0.001298,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.87939,
+                  "pnl": -0.00017041442
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-02-10",
+                  "amount": 0.000039,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.87939,
+                  "pnl": -0.000005120310000000001
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-02-10",
+                  "amount": 0.000597,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.87939,
+                  "pnl": -0.00007838013000000001
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-03-13",
+                  "amount": 0.000934,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.64703,
+                  "pnl": -0.00033964910000000006
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-03-19",
+                  "amount": 0.000937,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.65231,
+                  "pnl": -0.0003357926900000001
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-03-21",
+                  "amount": 0.000934,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.56111,
+                  "pnl": -0.00041989838000000004
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-06",
+                  "amount": 0.00096,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.45564,
+                  "pnl": -0.0005328384
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-08",
+                  "amount": 0.001314,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.3887,
+                  "pnl": -0.00081728172
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-08",
+                  "amount": 0.001013,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.3887,
+                  "pnl": -0.0006300657399999999
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-13",
+                  "amount": 0.001445,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.29547,
+                  "pnl": -0.0010334784500000002
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-13",
+                  "amount": 0.000934,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.29547,
+                  "pnl": -0.00066800614
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-28",
+                  "amount": 0.000526,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.27001,
+                  "pnl": -0.00038959242
+              }
+          ],
+          "expenses": [
+              {
+                  "date_acquired": "2025-02-10",
+                  "date_sold": "2025-02-10",
+                  "amount": 1.534505,
+                  "asset": "OSMO",
+                  "price_acquired": 0.29485,
+                  "price_disposed": 0.29485,
+                  "pnl": 0
+              },
+              {
+                  "date_acquired": "2025-01-02",
+                  "date_sold": "2025-04-13",
+                  "amount": 2,
+                  "asset": "UM",
+                  "price_acquired": 1.01068,
+                  "price_disposed": 0.29547,
+                  "pnl": -1.43042
+              }
+          ],
+          "inventory": {
+              "UM": [
+                  {
+                      "amount": 2072.983762,
+                      "price": 1.01068,
+                      "date": "2025-01-02",
+                      "timestamp": 1735776000000,
+                      "txs": {
+                          "type": "income",
+                          "label": "Receive",
+                          "height": "2823823",
+                          "tx_hash": "c6d0d14bb3b54eb89b856531b1121db811521d6fd83729319d0ac344d7f08f5d",
+                          "amount_in": 2124.999036,
+                          "asset_in": "UM",
+                          "amount_out": 0,
+                          "asset_out": "",
+                          "fee_amount": 0.000964,
+                          "fee_asset": "UM",
+                          "blockTime": "2025-01-02T01:11:44.000Z",
+                          "date": "2025-01-02",
+                          "timestamp": 1735776000000
+                      }
+                  },
+                  {
+                      "amount": 8928,
+                      "price": 0.56111,
+                      "date": "2025-03-21",
+                      "timestamp": 1742515200000,
+                      "txs": {
+                          "type": "income",
+                          "label": "Receive",
+                          "height": "4085039",
+                          "tx_hash": "8d51fba2105e3cbc67946158af5da70921763faf860b34e6d63ae0b2b30c4805",
+                          "amount_in": 8928,
+                          "asset_in": "UM",
+                          "amount_out": 0,
+                          "asset_out": "",
+                          "fee_amount": 0.000934,
+                          "fee_asset": "UM",
+                          "blockTime": "2025-03-21T14:26:53.000Z",
+                          "date": "2025-03-21",
+                          "timestamp": 1742515200000
+                      }
+                  },
+                  {
+                      "amount": 28.605679,
+                      "price": 0.27001,
+                      "date": "2025-04-28",
+                      "timestamp": 1745798400000,
+                      "txs": {
+                          "type": "income",
+                          "label": "Undelegate Claim",
+                          "height": "4687299",
+                          "tx_hash": "23342933838f4752749244f352f94da31547eb584ee90911a2fc24907cfcf447",
+                          "amount_in": 28.605679,
+                          "asset_in": "UM",
+                          "amount_out": 0,
+                          "asset_out": "",
+                          "fee_amount": 0.000526,
+                          "fee_asset": "UM",
+                          "blockTime": "2025-04-28T08:20:31.000Z",
+                          "date": "2025-04-28",
+                          "timestamp": 1745798400000
+                      }
+                  }
+              ],
+              "ATOM": [],
+              "OSMO": [],
+              "USDC": []
+          }
+      },
+      "settings": {
+          "year": 2025,
+          "shortRate": 12,
+          "longRate": 0,
+          "longDuration": "1Y",
+          "incomeRate": 24,
+          "costBasis": "FIFO",
+          "feesAreCapitalGains": false,
+          "ibcWithdrawalAsDisposal": false,
+          "ibcReceiveAsIncome": false
+      }
+  }
+}
