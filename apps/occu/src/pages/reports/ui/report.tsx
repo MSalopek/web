@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@penumbra-zone/ui/Button';
 
 import { TableCell } from '@penumbra-zone/ui/TableCell';
@@ -6,16 +7,13 @@ import { Density } from '@penumbra-zone/ui/Density';
 
 import { observer } from 'mobx-react-lite';
 import { Card } from '@penumbra-zone/ui/Card';
-import { Cog, FileDown, FileSpreadsheet, Printer, Trash2 } from 'lucide-react';
-import { useUnifiedAssets } from '../api/use-unified-assets';
-import { useEffect, useMemo, useState } from 'react';
-import { TaxReportData } from '@/calculate-tax/fifo';
+import { Cog, ExternalLink, Trash2 } from 'lucide-react';
 import { TaxSettings } from './report-settings';
 import { LocalStorageTaxReportData } from './events-table';
+import Link from 'next/link';
 
 export interface ReportProps {
   year: number;
-  report: TaxReportData;
   settings: TaxSettings;
   isLastRow: boolean;
 }
@@ -44,20 +42,8 @@ export const useTaxReports = () => {
   return { reports, isLoading };
 };
 
-const ReportRow = ({ report, year, settings, isLastRow }: ReportProps) => {
+const ReportRow = ({ year, settings, isLastRow }: ReportProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
-
-  const onPrintReport = () => {
-    console.log('PRINT REPORT');
-  };
-
-  const onDownloadCSV = () => {
-    console.log('DOWNLOAD CSV');
-  };
-
-  const onDownloadPDF = () => {
-    console.log('DOWNLOAD PDF');
-  };
 
   const onDeleteReport = () => {
     console.log('DELETE REPORT');
@@ -81,16 +67,12 @@ const ReportRow = ({ report, year, settings, isLastRow }: ReportProps) => {
         </Text>
       </TableCell>
       <TableCell variant={variant}>
-        <Button iconOnly icon={FileDown} actionType='accent' onClick={onDownloadPDF}>
-          Download PDF
-        </Button>
-        <Button iconOnly icon={FileSpreadsheet} onClick={onDownloadCSV}>
-          Download CSV
-        </Button>
-        <Button iconOnly icon={Printer} onClick={onPrintReport}>
-          Print
-        </Button>
-        <Button iconOnly icon={Cog} onClick={onPrintReport}>
+        <Link href={`/dashboard/${year}`}>
+          <Button iconOnly icon={ExternalLink} actionType='accent'>
+            View Report
+          </Button>
+        </Link>
+        <Button iconOnly icon={Cog}>
           Settings
         </Button>
         <Button iconOnly icon={Trash2} actionType='destructive' onClick={onDeleteReport}>
@@ -102,8 +84,8 @@ const ReportRow = ({ report, year, settings, isLastRow }: ReportProps) => {
 };
 
 export const ReportsList = observer(() => {
-  const { isLoading } = useUnifiedAssets();
-  const reports = useTaxReports();
+  // const { isLoading } = useUnifiedAssets();
+  const { reports, isLoading: isReportsLoading } = useTaxReports();
 
   // Transform the reports object into an array for rendering
   const reportsArray = useMemo(() => {
@@ -135,7 +117,7 @@ export const ReportsList = observer(() => {
             {/* empty cell for actions */}
             <TableCell> </TableCell>
 
-            {isLoading
+            {isReportsLoading
               ? Array.from({ length: 2 }).map((_, index) => (
                   <div className='grid grid-cols-subgrid col-span-3' key={index}>
                     <TableCell loading>&nbsp;</TableCell>

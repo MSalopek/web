@@ -34,6 +34,9 @@ export interface TaxTransactionEvent {
 export interface Disposal {
   date_acquired: Date | string | null;
   date_sold: Date | string | null;
+  height?: number | string | null;
+  tx_hash?: string | null;
+  label?: string | null;
   amount: number;
   asset: string;
   price_acquired: number;
@@ -46,6 +49,8 @@ export interface Disposal {
 
 export interface Income {
   height?: number | string | null;
+  tx_hash?: string | null;
+  label?: string | null;
   date?: Date | string | null;
   amount: number;
   asset: string;
@@ -56,6 +61,8 @@ export interface Income {
 export interface Expense {
   height?: number | null;
   date?: Date | null;
+  tx_hash?: string | null;
+  label?: string | null;
   amount: number;
   asset: string;
   price: number;

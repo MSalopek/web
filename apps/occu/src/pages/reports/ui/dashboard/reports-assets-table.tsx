@@ -4,10 +4,11 @@ import { Text } from '@penumbra-zone/ui/Text';
 
 import { Density } from '@penumbra-zone/ui/Density';
 import { Skeleton } from '@/shared/ui/skeleton';
-// import { ValueViewComponent } from '@penumbra-zone/ui/ValueView';
+
+import { useState } from 'react';
+import { Tabs } from '@penumbra-zone/ui/Tabs';
 
 import { observer } from 'mobx-react-lite';
-// import { useUnifiedAssets } from '../../api/use-unified-assets.ts';
 import { useTaxReports } from '../report.tsx';
 import { NoData } from '../no-data.tsx';
 import { InventoryLot } from '@/calculate-tax/common.ts';
@@ -15,6 +16,7 @@ import { TaxReportData } from '@/calculate-tax/fifo.ts';
 import { useHistoricAssetPrices } from '../../api/use-historic-prices.ts';
 import { TokenPriceList } from '@/shared/api/server/price-history/assets.ts';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { DisposalTable, ExpenseTable, IncomeTable } from './list-events.tsx';
 
 const LoadingState = () => {
   return (
@@ -72,6 +74,12 @@ const LoadingState = () => {
     </Card>
   );
 };
+
+enum ReportsTabs {
+  Income = 'Income',
+  Expenses = 'Expenses',
+  Disposals = 'Disposals',
+}
 
 const ReportInventoryRow = observer(
   ({
@@ -217,6 +225,8 @@ const getTradedAssets = (report?: TaxReportData) => {
 };
 
 export const ReportsAssetsTable = observer(({ year }: { year: string }) => {
+  const [tab, setTab] = useState(ReportsTabs.Income);
+
   const { reports, isLoading } = useTaxReports();
   const { prices, isLoading: isPricesLoading } = useHistoricAssetPrices(
     getTradedAssets(reports[year]?.report),
@@ -248,43 +258,67 @@ export const ReportsAssetsTable = observer(({ year }: { year: string }) => {
   const summaries = summarizeAssets(report.year.toString(), report.report, getPrice);
 
   return (
-    <Card>
-      <div className='p-3'>
-        <div className={'flex flex-col justify-between mb-4'}>
-          <Text as={'h4'} xxl color='text.primary'>
-            Holdings
-          </Text>
-          <Text variant={'detail'} color='text.secondary' as={'p'}>
-            Asset balances at the end of the period.
-          </Text>
-        </div>
-
-        <Density compact>
-          <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr] overflow-y-auto overflow-x-auto'>
-            <TableCell heading>Asset</TableCell>
-            <TableCell heading>Holdings</TableCell>
-            <TableCell heading>Market Value (USD)</TableCell>
-            <TableCell heading>Cost Basis (USD)</TableCell>
-            <TableCell heading>PnL (unrealized)</TableCell>
-
-            {isLoading ? (
-              <LoadingState />
-            ) : (
-              summaries.map((asset, index) => (
-                <ReportInventoryRow
-                  key={asset.symbol}
-                  symbol={asset.symbol}
-                  end_balance={asset.end_balance}
-                  market_value={asset.market_value}
-                  cost_basis={asset.cost_basis}
-                  pnl={asset.pnl}
-                  isLastRow={index === summaries.length - 1}
-                />
-              ))
-            )}
+    <>
+      <Card>
+        <div className='p-3'>
+          <div className={'flex flex-col justify-between mb-4'}>
+            <Text as={'h4'} xxl color='text.primary'>
+              Holdings
+            </Text>
+            <Text variant={'detail'} color='text.secondary' as={'p'}>
+              Asset balances at the end of the period.
+            </Text>
           </div>
-        </Density>
-      </div>
-    </Card>
+
+          <Density compact>
+            <div className='grid grid-cols-[1fr_1fr_1fr_1fr_1fr] overflow-y-auto overflow-x-auto'>
+              <TableCell heading>Asset</TableCell>
+              <TableCell heading>Holdings</TableCell>
+              <TableCell heading>Market Value (USD)</TableCell>
+              <TableCell heading>Cost Basis (USD)</TableCell>
+              <TableCell heading>PnL (unrealized)</TableCell>
+
+              {isLoading ? (
+                <LoadingState />
+              ) : (
+                summaries.map((asset, index) => (
+                  <ReportInventoryRow
+                    key={asset.symbol}
+                    symbol={asset.symbol}
+                    end_balance={asset.end_balance}
+                    market_value={asset.market_value}
+                    cost_basis={asset.cost_basis}
+                    pnl={asset.pnl}
+                    isLastRow={index === summaries.length - 1}
+                  />
+                ))
+              )}
+            </div>
+          </Density>
+        </div>
+      </Card>
+      <Card>
+        <div className='p-3'>
+          <div className='w-full mb-4 border-b border-b-other-tonalStroke'>
+            <Density compact>
+              <Tabs
+                value={tab}
+                actionType='accent'
+                onChange={value => setTab(value as ReportsTabs)}
+                options={[
+                  { value: ReportsTabs.Income, label: ReportsTabs.Income },
+                  { value: ReportsTabs.Expenses, label: ReportsTabs.Expenses },
+                  { value: ReportsTabs.Disposals, label: ReportsTabs.Disposals },
+                ]}
+              />
+            </Density>
+          </div>
+
+          {tab === ReportsTabs.Income && <IncomeTable events={report.report.incomes} />}
+          {tab === ReportsTabs.Disposals && <DisposalTable events={report.report.disposals} />}
+          {tab === ReportsTabs.Expenses && <ExpenseTable events={report.report.expenses} />}
+        </div>
+      </Card>
+    </>
   );
 });

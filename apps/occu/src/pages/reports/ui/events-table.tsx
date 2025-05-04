@@ -59,7 +59,7 @@ const EventTypePill = ({ type }: { type: string }) => {
   }
 };
 
-const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
+export const EventRow = ({ event, isLastRow }: TaxableTxEventSummaryProps) => {
   const variant = isLastRow ? 'lastCell' : 'cell';
 
   const handleSetType = async (type: string) => {

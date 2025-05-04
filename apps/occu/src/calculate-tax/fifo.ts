@@ -108,6 +108,8 @@ function handleIncome(
   incomes.push({
     date: tx.date,
     height: tx.height,
+    tx_hash: tx.tx_hash,
+    label: tx.label,
     amount: tx.amount_in,
     asset: tx.asset_in,
     price: price,
@@ -250,6 +252,9 @@ function handleDisposal(
     }
 
     disposals.push({
+      height: tx.height,
+      tx_hash: tx.tx_hash,
+      label: tx.label,
       date_acquired: lot.date,
       date_sold: dateString,
       amount: lot.amount_spent,
@@ -287,6 +292,8 @@ function handleFee(
     type: 'disposal',
     asset_out: tx.fee_asset,
     amount_out: tx.fee_amount,
+    tx_hash: tx.tx_hash,
+    label: tx.label,
   };
 
   handleDisposal(fee_tx, inventory, fees, getPrice);
@@ -370,6 +377,8 @@ function handleRebalance(
     }
 
     disposals.push({
+      tx_hash: tx.tx_hash,
+      label: tx.label,
       date_acquired: lot.date,
       date_sold: dateString,
       amount: lot.amount_spent,
