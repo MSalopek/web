@@ -18,6 +18,8 @@ import { TokenPriceList } from '@/shared/api/server/price-history/assets.ts';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { DisposalTable, ExpenseTable, IncomeTable } from './list-events.tsx';
 
+import { ReportCardsSection, ReportOverviewCard } from './section-cards';
+
 const LoadingState = () => {
   return (
     <Card>
@@ -216,6 +218,69 @@ const summarizeAssets = (
   return summaries;
 };
 
+interface ReportCardsData {
+  income: {
+    amount: number;
+    txs: number;
+  };
+  expenses: {
+    amount: number;
+    txs: number;
+  };
+  disposals: {
+    amount: number;
+    txs: number;
+  };
+  fees: {
+    amount: number;
+    txs: number;
+  };
+}
+
+const getCardsData = (report?: TaxReportData): ReportCardsData => {
+  if (!report) {
+    return {
+      income: {
+        amount: 0,
+        txs: 0,
+      },
+      expenses: {
+        amount: 0,
+        txs: 0,
+      },
+      disposals: {
+        amount: 0,
+        txs: 0,
+      },
+      fees: {
+        amount: 0,
+        txs: 0,
+      },
+    };
+  }
+
+  const { incomes, expenses, disposals, fees } = report;
+
+  return {
+    income: {
+      amount: incomes.reduce((acc, income) => acc + income.amount * income.price, 0),
+      txs: incomes.length,
+    },
+    expenses: {
+      amount: expenses.reduce((acc, expense) => acc + expense.pnl, 0),
+      txs: expenses.length,
+    },
+    disposals: {
+      amount: disposals.reduce((acc, disposal) => acc + disposal.pnl, 0),
+      txs: disposals.length,
+    },
+    fees: {
+      amount: fees.reduce((acc, fee) => acc + fee.pnl, 0),
+      txs: fees.length,
+    },
+  };
+};
+
 const getTradedAssets = (report?: TaxReportData) => {
   if (!report) {
     return [];
@@ -256,9 +321,40 @@ export const ReportsAssetsTable = observer(({ year }: { year: string }) => {
   }
 
   const summaries = summarizeAssets(report.year.toString(), report.report, getPrice);
+  const cardsData = getCardsData(report.report);
 
   return (
     <>
+      <div className='grid grid-cols-4 gap-4'>
+        <ReportOverviewCard
+          title='Income'
+          value={cardsData.income.amount.toFixed(2)}
+          pillText={`${cardsData.income.txs} Txs`}
+          footerText='Taxable cost basis'
+        />
+        <ReportOverviewCard
+          title='Expenses'
+          value={Math.abs(cardsData.expenses.amount).toFixed(2)}
+          pillText={`${cardsData.expenses.txs} Txs`}
+          footerText='Deductible from taxable income'
+        />
+        <ReportOverviewCard
+          title='Disposals'
+          value={cardsData.disposals.amount.toFixed(2)}
+          pillText={`${cardsData.disposals.txs} Txs`}
+          footerText={
+            cardsData.disposals.amount > 0
+              ? 'Overall gain from trading'
+              : 'Overall loss from trading'
+          }
+        />
+        <ReportOverviewCard
+          title='Fees'
+          value={Math.abs(cardsData.fees.amount).toFixed(2)}
+          pillText={`${cardsData.fees.txs} Txs`}
+          footerText='Transaction fees paid'
+        />
+      </div>
       <Card>
         <div className='p-3'>
           <div className={'flex flex-col justify-between mb-4'}>
