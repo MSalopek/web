@@ -255,7 +255,7 @@ export const ReportsAssetsTable = observer(({ year }: { year: string }) => {
             Holdings
           </Text>
           <Text variant={'detail'} color='text.secondary' as={'p'}>
-            End balance of each asset at the end of the period.
+            Asset balances at the end of the period.
           </Text>
         </div>
 
