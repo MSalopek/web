@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { PagePath } from '@/shared/const/pages';
-import VeilLogo from '../assets/veil-combined-logo.svg';
+import OccuLogo from '../assets/occu-logo-invert.png';
 
 export const HeaderLogo = () => {
   return (
     <Link className='flex h-8 items-center' href={PagePath.Overview}>
-      <VeilLogo width={96} height={15} />
+      <Image src={OccuLogo} width={96} height={15} alt='Occu Logo' />
     </Link>
   );
 };

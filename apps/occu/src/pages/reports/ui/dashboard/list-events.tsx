@@ -6,8 +6,9 @@ import { TableCell } from '@penumbra-zone/ui/TableCell';
 import { Text } from '@penumbra-zone/ui/Text';
 import { Density } from '@penumbra-zone/ui/Density';
 import { Button } from '@penumbra-zone/ui/Button';
-import { ArrowUpDown, FileDown, FileSpreadsheet } from 'lucide-react';
+import { ArrowUpDown, ExternalLinkIcon, FileDown, FileSpreadsheet } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 interface IncomeRowProps {
   event: Income;
@@ -69,9 +70,12 @@ export const IncomeRow = ({ event, isLastRow }: IncomeRowProps) => {
         </Text>
       </TableCell>
       <TableCell variant={variant}>
-        <Text variant={'smallTechnical'} color='text.secondary'>
-          {event.tx_hash ? event.tx_hash : '-'}
-        </Text>
+        <Link href={`/inspect/tx/${event.tx_hash}`} className='flex items-center gap-2'>
+          <Text variant={'smallTechnical'} color='text.secondary'>
+            {event.tx_hash ? event.tx_hash.slice(0, 6) + '...' + event.tx_hash.slice(-4) : '-'}
+          </Text>
+          <ExternalLinkIcon className='w-4 h-4 text-gray-400' />
+        </Link>
       </TableCell>
     </div>
   );
@@ -140,9 +144,12 @@ export const DisposalRow = ({ event, isLastRow }: DisposalRowProps) => {
         </Text>
       </TableCell>
       <TableCell variant={variant}>
-        <Text variant={'smallTechnical'} color='text.secondary'>
-          {event.tx_hash ? event.tx_hash : '-'}
-        </Text>
+        <Link href={`/inspect/tx/${event.tx_hash}`} className='flex items-center gap-2'>
+          <Text variant={'smallTechnical'} color='text.secondary'>
+            {event.tx_hash ? event.tx_hash.slice(0, 6) + '...' + event.tx_hash.slice(-4) : '-'}
+          </Text>
+          <ExternalLinkIcon className='w-4 h-4 text-gray-400' />
+        </Link>
       </TableCell>
     </div>
   );
@@ -211,9 +218,12 @@ export const ExpenseRow = ({ event, isLastRow }: ExpenseRowProps) => {
         </Text>
       </TableCell>
       <TableCell variant={variant}>
-        <Text variant={'smallTechnical'} color='text.secondary'>
-          {event.tx_hash ? event.tx_hash : '-'}
-        </Text>
+        <Link href={`/inspect/tx/${event.tx_hash}`} className='flex items-center gap-2'>
+          <Text variant={'smallTechnical'} color='text.secondary'>
+            {event.tx_hash ? event.tx_hash.slice(0, 6) + '...' + event.tx_hash.slice(-4) : '-'}
+          </Text>
+          <ExternalLinkIcon className='w-4 h-4 text-gray-400' />
+        </Link>
       </TableCell>
     </div>
   );

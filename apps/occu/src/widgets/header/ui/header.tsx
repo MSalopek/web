@@ -5,12 +5,12 @@ import { HelpPopover } from './help-popover';
 import { MobileNav } from './mobile-nav';
 import { DesktopNav } from './desktop-nav';
 import { Connection } from './connection';
-import { AlphaDevelopmentBanner } from './banner';
+// import { AlphaDevelopmentBanner } from './banner';
 
 export const Header = () => {
   return (
     <>
-      <AlphaDevelopmentBanner />
+      {/* <AlphaDevelopmentBanner /> */}
       <header className='grid grid-cols-3 items-center p-4'>
         <div className='flex items-center'>
           <HeaderLogo />
